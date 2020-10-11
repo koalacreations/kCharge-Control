@@ -2,12 +2,20 @@
   "name": "frontend",
   "version": "0.0.1",
   "description": "A web app for tracking and managing battery data.",
-  "productName": "jDischarger",
+  "productName": "jCharge",
   "author": "Jaimyn Mayer <hello@jaimyn.com.au>",
   "private": true,
   "scripts": {
-    "lint": "eslint --ext .js,.vue ./",
-    "test": "echo \"No test specified\" && exit 0"
+    "dev": "quasar dev -m spa",
+    "dev:electron": "quasar dev -m electron",
+    "dev:ios": "quasar dev -m capacitor -T ios",
+    "dev:android": "quasar dev -m capacitor -T android",
+    "build": "quasar build -m spa",
+    "build:pwa": "quasar build -m pwa",
+    "build:ios": "quasar build -m capacitor -T ios --ide",
+    "build:android": "quasar build -m capacitor -T android --ide",
+    "build:electron": "quasar build -m electron",
+    "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
@@ -18,6 +26,7 @@
   },
   "devDependencies": {
     "@quasar/app": "^2.0.0",
+    "@quasar/cli": "^1.1.2",
     "babel-eslint": "^10.0.1",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.9.0",

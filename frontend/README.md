@@ -4,7 +4,7 @@ A web app for tracking and managing battery data.
 
 ## Install the dependencies
 ```bash
-npm install
+yarn
 ```
 
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
