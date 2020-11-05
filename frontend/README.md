@@ -1,10 +1,10 @@
-# jDischarger (frontend)
+# jCharge (frontend)
 
-A web app for tracking and managing battery data.
+A battery testing and management platform
 
 ## Install the dependencies
 ```bash
-yarn
+npm install
 ```
 
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)

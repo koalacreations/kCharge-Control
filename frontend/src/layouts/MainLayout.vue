@@ -6,14 +6,16 @@
           flat
           dense
           round
-          icon="fas fa-bars"
+          icon="menu"
           aria-label="Menu"
           @click="leftDrawerOpen = !leftDrawerOpen"
         />
 
         <q-toolbar-title>
-          {{$t('appName')}}
+          Quasar App
         </q-toolbar-title>
+
+        <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 
@@ -28,31 +30,13 @@
           header
           class="text-grey-8"
         >
-          {{$t('Menu')}}
+          Essential Links
         </q-item-label>
         <EssentialLink
           v-for="link in essentialLinks"
           :key="link.title"
           v-bind="link"
         />
-        <q-item
-          clickable
-          tag="a"
-          href="https://github.com/jabelone/jCharge"
-        >
-          <q-item-section
-            avatar
-          >
-            <q-icon name="fab fa-github" />
-          </q-item-section>
-
-          <q-item-section>
-            <q-item-label>Github</q-item-label>
-            <q-item-label caption>
-              github.com/jabelone/jCharge
-            </q-item-label>
-          </q-item-section>
-        </q-item>
       </q-list>
     </q-drawer>
 
@@ -62,26 +46,64 @@
   </q-layout>
 </template>
 
-<script>
-import EssentialLink from 'components/EssentialLink.vue'
+<script lang="ts">
+import EssentialLink from 'components/EssentialLink.vue';
 
 const linksData = [
   {
-    title: 'Dashboard',
-    caption: 'Main dashboard',
-    icon: 'fas fa-chart-line',
-    link: 'https://quasar.dev'
+    title: 'Docs',
+    caption: 'quasar.dev',
+    icon: 'school',
+    link: 'https://quasar.dev',
+  },
+  {
+    title: 'Github',
+    caption: 'github.com/quasarframework',
+    icon: 'code',
+    link: 'https://github.com/quasarframework',
+  },
+  {
+    title: 'Discord Chat Channel',
+    caption: 'chat.quasar.dev',
+    icon: 'chat',
+    link: 'https://chat.quasar.dev',
+  },
+  {
+    title: 'Forum',
+    caption: 'forum.quasar.dev',
+    icon: 'record_voice_over',
+    link: 'https://forum.quasar.dev',
+  },
+  {
+    title: 'Twitter',
+    caption: '@quasarframework',
+    icon: 'rss_feed',
+    link: 'https://twitter.quasar.dev',
+  },
+  {
+    title: 'Facebook',
+    caption: '@QuasarFramework',
+    icon: 'public',
+    link: 'https://facebook.quasar.dev',
+  },
+  {
+    title: 'Quasar Awesome',
+    caption: 'Community Quasar projects',
+    icon: 'favorite',
+    link: 'https://awesome.quasar.dev',
   },
 ];
 
-export default {
+import { defineComponent, ref } from '@vue/composition-api';
+
+export default defineComponent({
   name: 'MainLayout',
   components: { EssentialLink },
-  data () {
-    return {
-      leftDrawerOpen: false,
-      essentialLinks: linksData
-    }
-  }
-}
+  setup() {
+    const leftDrawerOpen = ref(false);
+    const essentialLinks = ref(linksData);
+
+    return { leftDrawerOpen, essentialLinks };
+  },
+});
 </script>

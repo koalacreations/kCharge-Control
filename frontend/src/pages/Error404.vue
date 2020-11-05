@@ -22,8 +22,10 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'Error404'
-}
+<script lang="ts">
+import { defineComponent } from '@vue/composition-api';
+
+export default defineComponent({
+  name: 'Error404',
+});
 </script>
