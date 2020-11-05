@@ -29,6 +29,7 @@ module.exports = configure((ctx) => ({
     'composition-api',
     'i18n',
     'axios',
+    'socketio'
   ],
 
   // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -89,6 +90,12 @@ module.exports = configure((ctx) => ({
     https: false,
     port: 8080,
     open: true, // opens browser window automatically
+    proxy: {
+      // proxy all requests starting with /api to
+      '/api': {
+        target: 'http://localhost:8000',
+      },
+    },
   },
 
   // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework

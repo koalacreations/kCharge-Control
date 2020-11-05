@@ -5,9 +5,9 @@ import SocketIOServer from "socket.io";
 import initializeSocketIO from "./socket";
 
 const app = express();
-const port = 8080 || process.env.PORT;
+const port = 8000 || process.env.PORT;
 
-const server = new http.Server(app);
+const server = http.createServer(app);
 const io = SocketIOServer(server);
 
 initializeSocketIO(io);
