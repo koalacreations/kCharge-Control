@@ -1,8 +1,9 @@
 import * as Hapi from "@hapi/hapi";
 import "reflect-metadata";
-import { createConnection } from "typeorm";
+import { Connection, createConnection } from "typeorm";
+import { connect } from "socket.io-client";
 import routes from "./routes";
-import { Cell } from "./entity/Cell";
+import { Cell } from "./models/Cell";
 
 const pjson = require("../package.json");
 
@@ -27,12 +28,6 @@ const init = async () => {
   console.log("Server running on %s", server.info.uri);
 
   const connection = await createConnection();
-
-  // console.log("Inserting a new cell into the database...");
-  const cell2 = await Cell.count({
-    where:
-        { id: 1 },
-  });
 
   const users = await Cell.find();
 };
