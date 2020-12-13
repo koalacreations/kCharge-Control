@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import { Store } from 'vuex';
 import { StateInterface } from '../store';
 import routes from './routes';
+import { RouteMeta } from '../types';
 
 /*
  * If not building with SSR mode, you can
@@ -21,6 +22,11 @@ export default route<Store<StateInterface>>(({ Vue }) => {
     // quasar.conf.js -> build -> publicPath
     mode: process.env.VUE_ROUTER_MODE,
     base: process.env.VUE_ROUTER_BASE,
+  });
+
+  Router.beforeEach((to, from, next) => {
+    document.title = (to.meta as RouteMeta).title;
+    next();
   });
 
   return Router;

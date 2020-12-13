@@ -86,6 +86,14 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
 
     // allow debugger during development only
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+
+    'no-shadow': ["error", { "allow": ["Vue"] }],
+
+
+    semi: ["error", "always"],
+    quotes: ["error", "double"],
+    "no-unused-vars": ["warn"],
+    "import/extensions": ["warn", "never"],
   }
 }

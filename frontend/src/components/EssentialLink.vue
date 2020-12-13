@@ -1,5 +1,7 @@
 <template>
+<span>
   <q-item
+    v-if="link"
     clickable
     tag="a"
     target="_blank"
@@ -19,6 +21,27 @@
       </q-item-label>
     </q-item-section>
   </q-item>
+  <q-item
+    v-else
+    clickable
+    tag="a"
+    :to="to"
+  >
+    <q-item-section
+      v-if="icon"
+      avatar
+    >
+      <q-icon :name="icon" />
+    </q-item-section>
+
+    <q-item-section>
+      <q-item-label>{{ title }}</q-item-label>
+      <q-item-label caption>
+        {{ caption }}
+      </q-item-label>
+    </q-item-section>
+  </q-item>
+  </span>
 </template>
 
 <script lang="ts">
@@ -39,7 +62,12 @@ export default defineComponent({
 
     link: {
       type: String,
-      default: '#',
+      default: null,
+    },
+
+    to: {
+      type: Object,
+      default: null,
     },
 
     icon: {

@@ -14,8 +14,6 @@
         <q-toolbar-title>
           jCharge
         </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 
@@ -30,7 +28,7 @@
           header
           class="text-grey-8"
         >
-          Essential Links
+          Menu
         </q-item-label>
         <EssentialLink
           v-for="link in essentialLinks"
@@ -48,49 +46,20 @@
 
 <script lang="ts">
 import EssentialLink from 'components/EssentialLink.vue';
+import { mapGetters } from 'vuex';
 
 const linksData = [
   {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'mdi-school',
-    link: 'https://quasar.dev',
+    title: 'Dashboard',
+    caption: 'Main jCharge dashboard',
+    icon: 'mdi-view-dashboard',
+    to: { home: 'dashboard' },
   },
   {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
+    title: 'jCharge on Github',
+    caption: 'github.com/jabelone/jCharge',
     icon: 'mdi-github',
-    link: 'https://github.com/quasarframework',
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'mdi-chat',
-    link: 'https://chat.quasar.dev',
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'mdi-message',
-    link: 'https://forum.quasar.dev',
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'mdi-twitter',
-    link: 'https://twitter.quasar.dev',
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'mdi-facebook',
-    link: 'https://facebook.quasar.dev',
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'mdi-heart',
-    link: 'https://awesome.quasar.dev',
+    link: 'https://github.com/jabelone/jCharge',
   },
 ];
 
@@ -104,6 +73,9 @@ export default defineComponent({
     const essentialLinks = ref(linksData);
 
     return { leftDrawerOpen, essentialLinks };
+  },
+  computed: {
+    ...mapGetters('devices', ['getDevices']),
   },
 });
 </script>
