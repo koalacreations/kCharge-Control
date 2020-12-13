@@ -13,6 +13,10 @@ const init = async () => {
     host: "0.0.0.0",
   });
 
+  server.events.on("response", (request) => {
+    console.log(`${request.info.remoteAddress}: ${request.method.toUpperCase()} ${request.path}`);
+  });
+
   server.route(routes);
 
   server.route({

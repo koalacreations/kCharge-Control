@@ -45,28 +45,34 @@
 </template>
 
 <script lang="ts">
-import EssentialLink from 'components/EssentialLink.vue';
-import { mapGetters } from 'vuex';
+import EssentialLink from "components/EssentialLink.vue";
+import { mapGetters } from "vuex";
 
 const linksData = [
   {
-    title: 'Dashboard',
-    caption: 'Main jCharge dashboard',
-    icon: 'mdi-view-dashboard',
-    to: { home: 'dashboard' },
+    title: "Dashboard",
+    caption: "Main jCharge dashboard",
+    icon: "mdi-view-dashboard",
+    to: { name: "dashboard" },
   },
   {
-    title: 'jCharge on Github',
-    caption: 'github.com/jabelone/jCharge',
-    icon: 'mdi-github',
-    link: 'https://github.com/jabelone/jCharge',
+    title: "Cell Database",
+    caption: "Your cell database",
+    icon: "mdi-battery",
+    to: { name: "cellDatabase" },
+  },
+  {
+    title: "jCharge on Github",
+    caption: "github.com/jabelone/jCharge",
+    icon: "mdi-github",
+    link: "https://github.com/jabelone/jCharge",
   },
 ];
 
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from "@vue/composition-api";
 
 export default defineComponent({
-  name: 'MainLayout',
+  name: "MainLayout",
   components: { EssentialLink },
   setup() {
     const leftDrawerOpen = ref(false);
@@ -75,7 +81,7 @@ export default defineComponent({
     return { leftDrawerOpen, essentialLinks };
   },
   computed: {
-    ...mapGetters('devices', ['getDevices']),
+    ...mapGetters("devices", ["getDevices"]),
   },
 });
 </script>

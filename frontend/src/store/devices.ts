@@ -1,4 +1,4 @@
-import 'axios';
+import "axios";
 
 export interface devicesState {
   devices: Array<string>

@@ -1,9 +1,9 @@
-import { route } from 'quasar/wrappers';
-import VueRouter from 'vue-router';
-import { Store } from 'vuex';
-import { StateInterface } from '../store';
-import routes from './routes';
-import { RouteMeta } from '../types';
+import { route } from "quasar/wrappers";
+import VueRouter from "vue-router";
+import { Store } from "vuex";
+import { StateInterface } from "../store";
+import routes from "./routes";
+import { RouteMeta } from "../types";
 
 /*
  * If not building with SSR mode, you can
@@ -24,9 +24,8 @@ export default route<Store<StateInterface>>(({ Vue }) => {
     base: process.env.VUE_ROUTER_BASE,
   });
 
-  Router.beforeEach((to, from, next) => {
+  Router.afterEach((to, from) => {
     document.title = (to.meta as RouteMeta).title;
-    next();
   });
 
   return Router;

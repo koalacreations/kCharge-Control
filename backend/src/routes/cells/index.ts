@@ -12,7 +12,7 @@ const cellSchema = Joi.object({
 export default [
   {
     method: "GET",
-    path: "/cells",
+    path: "/api/cells/",
     handler: cells.get,
     options: {
       response: {
@@ -22,7 +22,7 @@ export default [
   },
   {
     method: "POST",
-    path: "/cells",
+    path: "/api/cells/",
     handler: cells.post,
     options: {
       validate: {
@@ -36,5 +36,5 @@ export default [
       },
     },
   },
-  { method: "GET", path: "/cells/{id}", handler: cell.get },
+  { method: "GET", path: "/cells/{id}/", handler: cell.get },
 ];

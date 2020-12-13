@@ -1,6 +1,6 @@
-import { store } from 'quasar/wrappers';
-import Vuex from 'vuex';
-import devices from './devices';
+import { store } from "quasar/wrappers";
+import Vuex from "vuex";
+import devices from "./devices";
 
 /*
  * If not building with SSR mode, you can

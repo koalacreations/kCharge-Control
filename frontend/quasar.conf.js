@@ -9,7 +9,7 @@
 /* eslint func-names: 0 */
 /* eslint global-require: 0 */
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { configure } = require('quasar/wrappers');
+const { configure } = require("quasar/wrappers");
 
 module.exports = configure((ctx) => ({
   // https://quasar.dev/quasar-cli/supporting-ts
@@ -26,34 +26,33 @@ module.exports = configure((ctx) => ({
   // --> boot files are part of "main.js"
   // https://quasar.dev/quasar-cli/boot-files
   boot: [
-    'composition-api',
-    'i18n',
-    'axios',
-    'socketio',
+    "composition-api",
+    "i18n",
+    "axios",
   ],
 
   // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
   css: [
-    'app.scss',
+    "app.scss",
   ],
 
   // https://github.com/quasarframework/quasar/tree/dev/extras
   extras: [
     // 'ionicons-v4',
-    'mdi-v5',
+    "mdi-v5",
     // 'fontawesome-v5',
     // 'eva-icons',
     // 'themify',
     // 'line-awesome',
     // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
-    'roboto-font', // optional, you are not bound to it
+    "roboto-font", // optional, you are not bound to it
     // 'material-icons', // optional, you are not bound to it
   ],
 
   // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
   build: {
-    vueRouterMode: 'history', // available values: 'hash', 'history'
+    vueRouterMode: "history", // available values: 'hash', 'history'
 
     // transpile: false,
 
@@ -76,9 +75,9 @@ module.exports = configure((ctx) => ({
       // linting is slow in TS projects, we execute it only for production builds
       if (ctx.prod) {
         cfg.module.rules.push({
-          enforce: 'pre',
+          enforce: "pre",
           test: /\.(js|vue)$/,
-          loader: 'eslint-loader',
+          loader: "eslint-loader",
           exclude: /node_modules/,
         });
       }
@@ -92,22 +91,23 @@ module.exports = configure((ctx) => ({
     open: true, // opens browser window automatically
     proxy: {
       // proxy all requests starting with /api to
-      '/api': {
-        target: 'http://localhost:8000',
+      "/api": {
+        target: "http://localhost:3000",
+        changeOrigin: false,
       },
     },
   },
 
   // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
   framework: {
-    iconSet: 'mdi-v5', // Quasar icon set
-    lang: 'en-us', // Quasar language pack
+    iconSet: "mdi-v5", // Quasar icon set
+    lang: "en-us", // Quasar language pack
     config: {},
 
     // Possible values for "importStrategy":
     // * 'auto' - (DEFAULT) Auto-import needed Quasar components & directives
     // * 'all'  - Manually specify what to import
-    importStrategy: 'auto',
+    importStrategy: "auto",
 
     // For special cases outside of where "auto" importStrategy can have an impact
     // (like functional components as one of the examples),
@@ -131,41 +131,41 @@ module.exports = configure((ctx) => ({
 
   // https://quasar.dev/quasar-cli/developing-pwa/configuring-pwa
   pwa: {
-    workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
+    workboxPluginMode: "GenerateSW", // 'GenerateSW' or 'InjectManifest'
     workboxOptions: {}, // only for GenerateSW
     manifest: {
-      name: 'jCharge',
-      short_name: 'jCharge',
-      description: 'A battery testing and management platform',
-      display: 'standalone',
-      orientation: 'portrait',
-      background_color: '#ffffff',
-      theme_color: '#027be3',
+      name: "jCharge",
+      short_name: "jCharge",
+      description: "A battery testing and management platform",
+      display: "standalone",
+      orientation: "portrait",
+      background_color: "#ffffff",
+      theme_color: "#027be3",
       icons: [
         {
-          src: 'icons/icon-128x128.png',
-          sizes: '128x128',
-          type: 'image/png',
+          src: "icons/icon-128x128.png",
+          sizes: "128x128",
+          type: "image/png",
         },
         {
-          src: 'icons/icon-192x192.png',
-          sizes: '192x192',
-          type: 'image/png',
+          src: "icons/icon-192x192.png",
+          sizes: "192x192",
+          type: "image/png",
         },
         {
-          src: 'icons/icon-256x256.png',
-          sizes: '256x256',
-          type: 'image/png',
+          src: "icons/icon-256x256.png",
+          sizes: "256x256",
+          type: "image/png",
         },
         {
-          src: 'icons/icon-384x384.png',
-          sizes: '384x384',
-          type: 'image/png',
+          src: "icons/icon-384x384.png",
+          sizes: "384x384",
+          type: "image/png",
         },
         {
-          src: 'icons/icon-512x512.png',
-          sizes: '512x512',
-          type: 'image/png',
+          src: "icons/icon-512x512.png",
+          sizes: "512x512",
+          type: "image/png",
         },
       ],
     },
@@ -183,7 +183,7 @@ module.exports = configure((ctx) => ({
 
   // Full list of options: https://quasar.dev/quasar-cli/developing-electron-apps/configuring-electron
   electron: {
-    bundler: 'packager', // 'packager' or 'builder'
+    bundler: "packager", // 'packager' or 'builder'
 
     packager: {
       // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
@@ -201,7 +201,7 @@ module.exports = configure((ctx) => ({
     builder: {
       // https://www.electron.build/configuration/configuration
 
-      appId: 'frontend',
+      appId: "frontend",
     },
 
     // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration
