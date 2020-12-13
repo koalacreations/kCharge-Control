@@ -1,24 +1,45 @@
-import express from "express";
-import http from "http";
-import SocketIOServer from "socket.io";
+import * as Hapi from "@hapi/hapi";
+import "reflect-metadata";
+import { createConnection } from "typeorm";
+import routes from "./routes";
+import { Cell } from "./entity/Cell";
 
-import initializeSocketIO from "./socket";
+const pjson = require("../package.json");
 
-const app = express();
-const port = 8000 || process.env.PORT;
+const init = async () => {
+  const server = new Hapi.Server({
+    port: 3000,
+    host: "0.0.0.0",
+  });
 
-const server = http.createServer(app);
-const io = SocketIOServer(server);
+  server.route(routes);
 
-initializeSocketIO(io);
+  server.route({
+    method: "GET",
+    path: "/",
+    handler: (request, h) => ({
+      message: "You've reached the jCharge API.",
+      version: pjson.version,
+    }),
+  });
 
-app.get("/", (req, res) => {
-  res.send("Hi!");
+  await server.start();
+  console.log("Server running on %s", server.info.uri);
+
+  const connection = await createConnection();
+
+  // console.log("Inserting a new cell into the database...");
+  const cell2 = await Cell.count({
+    where:
+        { id: 1 },
+  });
+
+  const users = await Cell.find();
+};
+
+process.on("unhandledRejection", (err) => {
+  console.log(err);
+  process.exit(1);
 });
 
-
-// Start the websocket and http server
-server.listen(port, () => {
-  // tslint:disable-next-line:no-console
-  console.log(`server started at http://localhost:${port}`);
-});
+init();

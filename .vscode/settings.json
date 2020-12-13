@@ -1,0 +1,10 @@
+{
+    "files.autoSave": "onFocusChange",
+    "eslint.workingDirectories": [
+        "./frontend",
+        "./backend"
+    ],
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+}
