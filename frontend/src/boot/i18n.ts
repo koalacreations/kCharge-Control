@@ -1,9 +1,9 @@
-import { boot } from 'quasar/wrappers';
-import messages from 'src/i18n';
-import Vue from 'vue';
-import VueI18n from 'vue-i18n';
+import { boot } from "quasar/wrappers";
+import messages from "src/i18n";
+import Vue from "vue";
+import VueI18n from "vue-i18n";
 
-declare module 'vue/types/vue' {
+declare module "vue/types/vue" {
   interface Vue {
     i18n: VueI18n;
   }
@@ -12,8 +12,8 @@ declare module 'vue/types/vue' {
 Vue.use(VueI18n);
 
 export const i18n = new VueI18n({
-  locale: 'en-au',
-  fallbackLocale: 'en-us',
+  locale: "en-au",
+  fallbackLocale: "en-us",
   messages,
 });
 

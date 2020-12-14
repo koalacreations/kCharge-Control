@@ -1,20 +1,17 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-dialog ref="addCellDialog" v-model="newCellDialog" persistent transition-show="scale" transition-hide="scale">
-      <q-card class="bg-teal text-white" style="max-width: 350px">
+    <q-dialog ref="addCellDialog" v-model="newCellDialog" persistent
+    transition-show="scale" transition-hide="scale">
+      <q-card style="max-width: 350px">
         <q-card-section>
           <div class="text-h6">Add new cell</div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-          Add a new battery cell by scanning it's QR Code.
         </q-card-section>
 
          <q-card-section class="q-pt-none">
           <scan-cell/>
         </q-card-section>
 
-        <q-card-actions align="right" class="bg-white text-teal">
+        <q-card-actions align="right">
           <q-btn flat label="Close" v-close-popup />
         </q-card-actions>
       </q-card>
@@ -54,7 +51,6 @@
       v-model="leftDrawerOpen"
       show-if-above
       bordered
-      content-class="bg-grey-1"
     >
       <q-list>
         <q-item-label

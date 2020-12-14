@@ -1,7 +1,7 @@
-import axios, { AxiosInstance } from 'axios';
-import { boot } from 'quasar/wrappers';
+import axios, { AxiosInstance } from "axios";
+import { boot } from "quasar/wrappers";
 
-declare module 'vue/types/vue' {
+declare module "vue/types/vue" {
   interface Vue {
     $axios: AxiosInstance;
   }

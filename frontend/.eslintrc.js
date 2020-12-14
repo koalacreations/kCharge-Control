@@ -1,13 +1,6 @@
 const { resolve } = require('path');
 module.exports = {
-  // https://eslint.org/docs/user-guide/configuring#configuration-cascading-and-hierarchy
-  // This option interrupts the configuration hierarchy at this file
-  // Remove this if you have an higher level ESLint config file (it usually happens into a monorepos)
   root: true,
-
-  // https://eslint.vuejs.org/user-guide/#how-to-use-custom-parser
-  // Must use parserOptions instead of "parser" to allow vue-eslint-parser to keep working
-  // `parser: 'vue-eslint-parser'` is already included with any 'plugin:vue/**' config and should be omitted
   parserOptions: {
     // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/parser#configuration
     // https://github.com/TypeStrong/fork-ts-checker-webpack-plugin#eslint
@@ -57,7 +50,6 @@ module.exports = {
   ],
 
   globals: {
-    ga: true, // Google Analytics
     cordova: true,
     __statics: true,
     process: true,
@@ -68,7 +60,6 @@ module.exports = {
   // add your custom rules here
   rules: {
     'no-param-reassign': 'off',
-
     'import/first': 'off',
     'import/named': 'error',
     'import/namespace': 'error',
@@ -84,15 +75,14 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
 
+    // my rules
     // allow debugger during development only
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-
     'no-shadow': ["error", { "allow": ["Vue"] }],
-
-
     semi: ["error", "always"],
     quotes: ["error", "double"],
     "no-unused-vars": ["warn"],
     "import/extensions": ["warn", "never"],
+    radix: ["warn", "as-needed"],
   }
 }

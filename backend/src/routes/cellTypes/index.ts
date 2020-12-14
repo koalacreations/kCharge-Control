@@ -1,40 +1,38 @@
 import Joi from "joi";
-import cells from "./cells";
-import cell from "./cell";
+import cellTypes from "./cellTypes";
+import cellType from "./cellType";
 
-const cellSchema = Joi.object({
+const cellTypeSchema = Joi.object({
   id: Joi.number().required(),
   type: Joi.string().required(),
-  state: Joi.string().required(),
   created: Joi.date().timestamp("unix").required(),
 });
 
 export default [
   {
     method: "GET",
-    path: "/api/cells/",
-    handler: cells.get,
+    path: "/api/cellTypes/",
+    handler: cellTypes.get,
     options: {
       response: {
-        schema: Joi.array().items(cellSchema),
+        schema: Joi.array().items(cellTypeSchema),
       },
     },
   },
   {
     method: "POST",
-    path: "/api/cells/",
-    handler: cells.post,
+    path: "/api/cellTypes/",
+    handler: cellTypes.post,
     options: {
       validate: {
         payload: Joi.object({
-          id: Joi.number(),
           type: Joi.string().min(1).max(10),
         }),
       },
       response: {
-        schema: cellSchema,
+        schema: cellTypeSchema,
       },
     },
   },
-  { method: "GET", path: "/cells/{id}/", handler: cell.get },
+  { method: "GET", path: "/cellTypes/{id}/", handler: cellType.get },
 ];

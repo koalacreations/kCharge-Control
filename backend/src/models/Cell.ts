@@ -1,19 +1,21 @@
 /* eslint-disable import/prefer-default-export */
 import {
-  BaseEntity, Entity, Column, PrimaryColumn, Unique,
+  BaseEntity, Entity, Column, PrimaryColumn, Unique, ManyToOne,
 } from "typeorm";
+import { CellType } from "./CellType";
 
 @Entity()
 @Unique(["id"])
+// eslint-disable-next-line import/export
 export class Cell extends BaseEntity {
     @PrimaryColumn()
     id: number;
 
     @Column()
-    type: string;
-
-    @Column()
     state: Cell.CellState;
+
+    @ManyToOne(() => CellType, (cellType) => cellType.cells)
+    cellType: CellType;
 
     @Column({ default: () => Math.floor(new Date().getTime() / 1000) })
     created: number;
