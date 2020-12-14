@@ -1,5 +1,25 @@
 <template>
   <q-layout view="lHh Lpr lFf">
+    <q-dialog ref="addCellDialog" v-model="newCellDialog" persistent transition-show="scale" transition-hide="scale">
+      <q-card class="bg-teal text-white" style="max-width: 350px">
+        <q-card-section>
+          <div class="text-h6">Add new cell</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          Add a new battery cell by scanning it's QR Code.
+        </q-card-section>
+
+         <q-card-section class="q-pt-none">
+          <scan-cell/>
+        </q-card-section>
+
+        <q-card-actions align="right" class="bg-white text-teal">
+          <q-btn flat label="Close" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
     <q-header elevated>
       <q-toolbar>
         <q-btn
@@ -14,6 +34,19 @@
         <q-toolbar-title>
           jCharge
         </q-toolbar-title>
+
+        <q-space/>
+
+        <q-btn round flat icon="mdi-battery-unknown">
+          <q-tooltip :delay="500">
+            Search for battery cell
+          </q-tooltip>
+        </q-btn>
+        <q-btn round flat icon="mdi-battery-positive" @click="newCellDialog = true">
+          <q-tooltip :delay="500">
+            Add a new battery cell
+          </q-tooltip>
+        </q-btn>
       </q-toolbar>
     </q-header>
 
@@ -46,6 +79,8 @@
 
 <script lang="ts">
 import EssentialLink from "components/EssentialLink.vue";
+import { defineComponent, ref } from "@vue/composition-api";
+import ScanCell from "components/ScanCell.vue";
 import { mapGetters } from "vuex";
 
 const linksData = [
@@ -61,6 +96,11 @@ const linksData = [
     icon: "mdi-battery",
     to: { name: "cellDatabase" },
   },
+
+  {
+    separator: true,
+  },
+
   {
     title: "jCharge on Github",
     caption: "github.com/jabelone/jCharge",
@@ -69,11 +109,20 @@ const linksData = [
   },
 ];
 
-import { defineComponent, ref } from "@vue/composition-api";
-
 export default defineComponent({
   name: "MainLayout",
-  components: { EssentialLink },
+  data() {
+    return {
+      newCellDialog: false,
+    };
+  },
+  beforeMount() {
+    if (this.$route.path.includes("newCellDialog")) this.newCellDialog = true;
+  },
+  beforeRouteUpdate(to) {
+    if (to.path.includes("newCellDialog")) this.newCellDialog = true;
+  },
+  components: { EssentialLink, ScanCell },
   setup() {
     const leftDrawerOpen = ref(false);
     const essentialLinks = ref(linksData);

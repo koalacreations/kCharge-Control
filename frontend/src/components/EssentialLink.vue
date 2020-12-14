@@ -1,7 +1,8 @@
 <template>
 <span>
+  <q-separator v-if="separator" />
   <q-item
-    v-if="link"
+    v-else-if="link"
     clickable
     tag="a"
     target="_blank"
@@ -45,19 +46,25 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from "@vue/composition-api";
 
 export default defineComponent({
-  name: 'EssentialLink',
+  name: "EssentialLink",
   props: {
+    separator: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
     title: {
       type: String,
-      required: true,
+      required: false,
     },
 
     caption: {
       type: String,
-      default: '',
+      default: "",
     },
 
     link: {
@@ -72,7 +79,7 @@ export default defineComponent({
 
     icon: {
       type: String,
-      default: '',
+      default: "",
     },
   },
 });

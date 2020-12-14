@@ -17,6 +17,10 @@ const routes: RouteConfig[] = [
       {
         name: "cellDatabase", path: "", component: () => import("pages/CellDatabase.vue"), meta: { title: "Cell Database" },
       },
+
+      {
+        name: "cellDatabaseDefault", path: "*", component: () => import("pages/CellDatabase.vue"), meta: { title: "Cell Database" },
+      },
     ],
   },
 
