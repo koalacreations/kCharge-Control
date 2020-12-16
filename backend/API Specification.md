@@ -20,18 +20,15 @@ The jCharge Control protocol is web socket based. Websockets were specifically c
 * A device can be fully automated and the jCharge backend server / UI is simply monitoring a device, the device can be fully controlled by the jCharge backend server / UI, or a mixture of both.
 
 ## Packet format
-A jCharge Control packet is defined as a single JSON object that follows the format below. Comments may be used to explain certain things but comments **must not** be included in any packet because it is not valid JSON.
+A jCharge Control packet is defined as a single JSON object that follows the format below. Each packet's example object **must** be put in the `payload` key to form a valid jCharge Control packet.
 
 ```
 {
 	"version": 1, // protocol version
-	"command": "commandString", // commandString as defined below
-	"payload": {
-		// payload as defined under the appropriate command definition below
-	}
+	"command": "commandName",
+	"payload": {}
 }
 ```
-The JSON standard does *not* allow comments, but they have been added above to clarify the packet format. You **must not** send malformed JSON (such as JSON containing comments).
 
 ## Auto Discovery
 The jCharge Control protocol defines an auto discovery mechanism to help testing devices discover a jCharge Control server on the local network. A testing device **should** implement auto discovery, but if it chooses not to, this section **may** be ignored.
@@ -58,7 +55,7 @@ Each command definition below is a valid jCharge Control command. Any commands *
 ```json
 {
 	"serverHost": "192.168.0.42:12345",
-	"time": unix_timestamp_in_utc,
+	"time": 1608127015,
 	"serverName": "name_of_server"
 }
 ```
@@ -82,7 +79,7 @@ Each command definition below is a valid jCharge Control command. Any commands *
 	"deviceManufacturer": "manufacturer_of_device" | null,
 	"deviceModel": "model_or_type_of_device" | null,
 	"capabilities": {
-		channels: 0-8, // more may be supported but the UI will *not* look good
+		channels: 8,
 		charge: false,
 		discharge: true,
 		configurableCharge: false,
@@ -191,7 +188,7 @@ Each command definition below is a valid jCharge Control command. Any commands *
 	"capacity": 2500,
 	"data": [
 		{
-			"time": seconds_after_discharge_started,
+			"time": 1608127015,
 			"voltage": 3500,
 			"current" 1900,
 			"capacity" 300,
@@ -327,6 +324,7 @@ Each command definition below is a valid jCharge Control command. Any commands *
 #### Notes
 * A jCharge backend server may log any reported message but it **should** display it on the UI immediately upon receiving it.
 * The UI **should** show red for an error, yellow for a warning and the primary colour for an info message.
+* The message length **should** be less than 50 characters. However, messages up to 250 characters **may** be sent. This restriction is mainly for display purposes.
 
 --
 
@@ -356,9 +354,7 @@ Each command definition below is a valid jCharge Control command. Any commands *
 
 ```json
 {
-	"configuration": {
-		... // user supplied object
-	}
+	"configuration": {}
 }
 ```
 
