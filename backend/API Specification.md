@@ -52,7 +52,7 @@ Each command definition below is a valid jCharge Control command. Any commands *
 
 #### Payload
 
-```json
+```javascript
 {
 	"serverHost": "192.168.0.42:12345",
 	"time": 1608127015,
@@ -105,7 +105,7 @@ Each command definition below is a valid jCharge Control command. Any commands *
 **Sent to:** server
 
 #### Payload
-```json
+```javascript
 {
 	"channels": [
 		{
@@ -136,7 +136,7 @@ Each command definition below is a valid jCharge Control command. Any commands *
 **Sent to:** server
 
 #### Payload
-```json
+```javascript
 {
 	"channel": "channel_id",
 	"startVoltage": 4200 | null,
@@ -177,7 +177,7 @@ Each command definition below is a valid jCharge Control command. Any commands *
 **Sent to:** server
 
 #### Payload
-```json
+```javascript
 {
 	"channel": "channel_id",
 	"startVoltage": 4200 | null,
@@ -221,7 +221,7 @@ Each command definition below is a valid jCharge Control command. Any commands *
 **Sent to:** server
 
 #### Payload
-```json
+```javascript
 {
 	"dcResistance": 60 | null,
 	"acResistance": 20 | null,
@@ -240,7 +240,7 @@ Each command definition below is a valid jCharge Control command. Any commands *
 
 #### Payload
 
-```json
+```javascript
 {
 	"channel": "id_of_channel",
 	"action": "charge" | "discharge" | "dcResistance" | "acResistance"
@@ -259,7 +259,7 @@ Each command definition below is a valid jCharge Control command. Any commands *
 
 #### Payload
 
-```json
+```javascript
 {
 	"channel": "id_of_channel"
 }
@@ -277,7 +277,7 @@ Each command definition below is a valid jCharge Control command. Any commands *
 
 #### Payload
 
-```json
+```javascript
 {
 	"channel": "id_of_channel"
 }
@@ -296,7 +296,7 @@ Each command definition below is a valid jCharge Control command. Any commands *
 #### Payload
 
 
-```json
+```javascript
 {
 	"channel": "id_of_channel"
 }
@@ -314,7 +314,7 @@ Each command definition below is a valid jCharge Control command. Any commands *
 
 #### Payload
 
-```json
+```javascript
 {
 	"type": "error" | "warning" | "info",
 	"message": "descriptive_error_or_warning_or_info_message"
@@ -334,7 +334,7 @@ Each command definition below is a valid jCharge Control command. Any commands *
 
 #### Payload
 
-```json
+```javascript
 {
 	"type": "powerCycle" | "factoryReset"
 }
@@ -352,7 +352,7 @@ Each command definition below is a valid jCharge Control command. Any commands *
 
 #### Payload
 
-```json
+```javascript
 {
 	"configuration": {}
 }
