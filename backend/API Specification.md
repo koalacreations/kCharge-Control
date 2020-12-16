@@ -82,8 +82,10 @@ Each command definition below is a valid jCharge Control command. Any commands *
 		"channels": 8,
 		"charge": false,
 		"discharge": true,
-		"configurableCharge": false,
-		"configurableDischarge": false
+		"configurableChargeCurrent": false,
+		"configurableDischargeCurrent": false,
+		"configurableChargeVoltage": false,
+		"configurableDischargeVoltage": true
 	}
 }
 ```
@@ -95,7 +97,8 @@ Each command definition below is a valid jCharge Control command. Any commands *
 * `deviceManufacturer` and `deviceModel` are both optional and can be a string or `null`. Used for display purposes.
 * `channels` specify the number of channels that can be controlled and are expected when reporting status.
 * `charge` and `discharge` specify if the device supports charging or discharging but the rate is not configurable.
-* `configurableCharge` and `configurableDischarge` specify if the device supports charging or discharging at a configurable rate.
+* `configurableChargeCurrent` and `configurableDischargeCurrent` specify if the device supports charging or discharging at a configurable current.
+* `configurableChargeVoltage` and `configurableDischargeVoltage` specify if the device supports charging or discharging with a configurable voltage cutoff.
 * The `deviceId` is not needed in other packets because the server keeps track of each socket connection separately.
 
 --
@@ -243,12 +246,16 @@ Each command definition below is a valid jCharge Control command. Any commands *
 ```javascript
 {
 	"channel": "id_of_channel",
-	"action": "charge" | "discharge" | "dcResistance" | "acResistance"
+	"action": "charge" | "discharge" | "dcResistance" | "acResistance",
+	"rate": 1900 | null,
+	"cutoffVoltage": 4200 | null
 }
 ```
 
 #### Notes
 * Requests that a specified action is started on the specified channel. The device **should** ignore it and respond with a `reportError` packet if it is not implemented on the device.
+* `rate` the rate of charge/discharge in mA. This value will be `null` if the device reported it's not implemented.
+* `cutoffVoltage` the voltage (in mV) at which the device should stop charging/discharging. This value will be set to `null` if the device reported it's not implemented.
 * A device **may** ignore this command if it doesn't want to implement it.
 
 --
