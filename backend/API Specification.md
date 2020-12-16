@@ -42,7 +42,9 @@ The auto discovery mechanism works as follows:
 * A jCharge backend server **may** choose to close the websocket connection, or, wait for a valid `hello` packet before attempting to parse any more packets from that device.
 
 ## Command Definitions
-Each command definition below is a valid jCharge Control command. Any commands *not* listed below **must** be ignored. The title of each command definition should be used in the `command` key and the object listed under each title should be used in the `payload` key of the jCharge Control Packet. Each command **should** only be sent in to the devices listed under each command.
+Each command definition below is a valid jCharge Control command. Any commands *not* listed below **must** be ignored. The title of each command definition should be used in the `command` key and the object listed under each title should be used in the `payload` key of the jCharge Control Packet. Each command **should** only be sent to the devices listed under each command (ie only to server or only to a device).
+
+A `device` is a battery cell charger/discharger etc. that is connecting to a jCharge Control backend.
 
 --
 
