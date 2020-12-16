@@ -1,6 +1,6 @@
 <template>
   <q-page class="row items-center justify-evenly">
-    Hello, World!
+    No jCharge devices found on the local network.
   </q-page>
 </template>
 

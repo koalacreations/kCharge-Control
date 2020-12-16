@@ -84,5 +84,7 @@ module.exports = {
     "no-unused-vars": ["warn"],
     "import/extensions": ["warn", "never"],
     radix: ["warn", "as-needed"],
+    "no-empty-function": "off",
+    "@typescript-eslint/no-empty-function": "off"
   }
 }

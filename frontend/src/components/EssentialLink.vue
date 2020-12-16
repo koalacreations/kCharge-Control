@@ -27,6 +27,7 @@
     clickable
     tag="a"
     :to="to"
+    exact
   >
     <q-item-section
       v-if="icon"

@@ -32,8 +32,6 @@ const init = async () => {
   console.log("Server running on %s", server.info.uri);
 
   const connection = await createConnection();
-
-  const users = await Cell.find();
 };
 
 process.on("unhandledRejection", (err) => {

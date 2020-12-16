@@ -2,7 +2,7 @@ import { RouteConfig } from "vue-router";
 
 const routes: RouteConfig[] = [
   {
-    path: "/dashboard/",
+    path: "/",
     component: () => import("layouts/MainLayout.vue"),
     children: [
       {
@@ -17,7 +17,9 @@ const routes: RouteConfig[] = [
       {
         name: "cellDatabase", path: "", component: () => import("pages/CellDatabase.vue"), meta: { title: "Cell Database" },
       },
-
+      {
+        name: "editCell", path: ":cellId", component: () => import("pages/EditCellPage.vue"), meta: { title: "Edit Cell" },
+      },
       {
         name: "cellDatabaseDefault", path: "*", component: () => import("pages/CellDatabase.vue"), meta: { title: "Cell Database" },
       },

@@ -6,7 +6,7 @@
       :columns="columns"
       row-key="id"
       :filter="filter"
-      hide-header
+      :grid="gridMode"
     >
       <template v-slot:top-right>
         <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
@@ -21,16 +21,11 @@
 
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
-
-interface ICell {
-        id: number,
-        type: string,
-        state: string,
-        created: number,
-      }
+import { date } from "quasar";
+import { ICell, ICellType } from "../../../backend/src/models/Cell";
 
 export default defineComponent({
-  name: "Dashboard",
+  name: "CellDatabase",
   data() {
     return {
       filter: "",
@@ -39,12 +34,21 @@ export default defineComponent({
           name: "id", align: "center", label: "Cell ID", field: "id", sortable: true,
         },
         {
-          name: "type", label: "Brand and Type", field: "type", sortable: true,
+          name: "type",
+          label: "Type",
+          field: "cellType",
+          sortable: true,
+          format: (val: ICellType) => val.name,
+        },
+        {
+          name: "class", label: "Class", field: "class", sortable: true,
         },
         {
           name: "state", label: "State", field: "state", sortable: true,
         },
-        { name: "created", label: "Created Date", field: "created" },
+        {
+          name: "created", label: "Created Date", field: "created", format: (val: number) => date.formatDate(val, "DD/MM/YY"),
+        },
       ],
       cells: [] as Array<ICell>,
     };
@@ -54,6 +58,11 @@ export default defineComponent({
     this.$axios.get("/api/cells/").then((result) => {
       this.cells = result.data as Array<ICell>;
     });
+  },
+  computed: {
+    gridMode() {
+      return this.$q.screen.lt.sm;
+    },
   },
 });
 </script>

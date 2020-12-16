@@ -13,7 +13,7 @@ const post = async (request: any, h: ResponseToolkit) => {
   const cell = await Cell.findOne(request.payload.id);
   if (cell) throw Boom.conflict();
 
-  let cellType = await CellType.findOne(request.payload.id);
+  let cellType = await CellType.findOne(request.payload.type);
   if (!cellType) {
     cellType = await CellType.create({
       id: request.payload.type,
@@ -26,10 +26,11 @@ const post = async (request: any, h: ResponseToolkit) => {
       id: request.payload.id,
       cellType,
       state: Cell.CellState.New,
+      class: Cell.CellClass.Normal,
     },
   ).save();
 
-  return newCell;
+  return h.response(newCell).code(201);
 };
 
 export default { get, post };

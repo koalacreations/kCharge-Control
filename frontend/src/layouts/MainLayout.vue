@@ -4,7 +4,7 @@
     transition-show="scale" transition-hide="scale">
       <q-card style="max-width: 350px">
         <q-card-section>
-          <div class="text-h6">Add new cell</div>
+          <div class="text-h6">Add or find a cell</div>
         </q-card-section>
 
          <q-card-section class="q-pt-none">
@@ -34,14 +34,9 @@
 
         <q-space/>
 
-        <q-btn round flat icon="mdi-battery-unknown">
+        <q-btn round flat icon="mdi-battery" @click="newCellDialog = true">
           <q-tooltip :delay="500">
-            Search for battery cell
-          </q-tooltip>
-        </q-btn>
-        <q-btn round flat icon="mdi-battery-positive" @click="newCellDialog = true">
-          <q-tooltip :delay="500">
-            Add a new battery cell
+            Add or find a cell
           </q-tooltip>
         </q-btn>
       </q-toolbar>

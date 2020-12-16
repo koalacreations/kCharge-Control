@@ -14,7 +14,12 @@ export class Cell extends BaseEntity {
     @Column()
     state: Cell.CellState;
 
-    @ManyToOne(() => CellType, (cellType) => cellType.cells)
+    @Column()
+    class: Cell.CellClass;
+
+    @ManyToOne(() => CellType, (cellType) => cellType.cells, {
+      eager: true,
+    })
     cellType: CellType;
 
     @Column({ default: () => Math.floor(new Date().getTime() / 1000) })
@@ -25,13 +30,32 @@ export class Cell extends BaseEntity {
 export namespace Cell {
   // eslint-disable-next-line no-shadow
   export enum CellState {
-  New = "new",
-  Charging = "charging",
-  Charged = "charged",
-  Discharging = "discharging",
-  Discharged = "discharged",
-  Error = "error",
-  VoltageHigh = "voltagehigh",
-  VoltageLow = "voltagelow"
+    New = "new",
+    Charging = "charging",
+    Charged = "charged",
+    Discharging = "discharging",
+    Discharged = "discharged",
+    Error = "error",
+    VoltageHigh = "voltagehigh",
+    VoltageLow = "voltagelow"
+  }
+
+  // eslint-disable-next-line no-shadow
+  export enum CellClass {
+    Normal = "normal",
+    Heater = "heater",
+  }
 }
+
+export interface ICellType {
+    id: string,
+    name: string,
+  }
+
+export interface ICell {
+  id: number,
+  state: string,
+  class: Cell.CellClass,
+  cellType: ICellType,
+  created: number,
 }

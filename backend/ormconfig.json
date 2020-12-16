@@ -2,7 +2,7 @@
    "type": "sqlite",
    "logging": false,
    "database": "database.sqlite",
-   "synchronize": true,
+   "synchronize": false,
    "entities": [
       "src/models/**/*.ts"
    ],

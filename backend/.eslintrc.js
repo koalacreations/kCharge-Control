@@ -27,5 +27,7 @@ module.exports = {
     quotes: ["error", "double"],
     "no-unused-vars": ["warn"],
     "import/extensions": ["warn", "never"],
+    "no-empty-function": "off",
+    "@typescript-eslint/no-empty-function": "off",
   },
 };
