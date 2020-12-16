@@ -72,18 +72,18 @@ Each command definition below is a valid jCharge Control command. Any commands *
 **Sent to:** server
 
 #### Payload
-```json
+```javascript
 {
 	"deviceId": "unique_identifier_of_device",
 	"deviceName": "name_of_device" | null,
 	"deviceManufacturer": "manufacturer_of_device" | null,
 	"deviceModel": "model_or_type_of_device" | null,
 	"capabilities": {
-		channels: 8,
-		charge: false,
-		discharge: true,
-		configurableCharge: false,
-		configurableDischarge: false
+		"channels": 8,
+		"charge": false,
+		"discharge": true,
+		"configurableCharge": false,
+		"configurableDischarge": false
 	}
 }
 ```
@@ -145,10 +145,10 @@ Each command definition below is a valid jCharge Control command. Any commands *
 	"capacity": 2500,
 	"data": [
 		{
-			"time": seconds_after_charge_started,
+			"time": 1608127015,
 			"voltage": 3500,
-			"current" 1900,
-			"capacity" 300,
+			"current": 1900,
+			"capacity": 300,
 			"temperature": 24
 		}
 	]
@@ -190,8 +190,8 @@ Each command definition below is a valid jCharge Control command. Any commands *
 		{
 			"time": 1608127015,
 			"voltage": 3500,
-			"current" 1900,
-			"capacity" 300,
+			"current": 1900,
+			"capacity": 300,
 			"temperature": 24
 		}
 	]
