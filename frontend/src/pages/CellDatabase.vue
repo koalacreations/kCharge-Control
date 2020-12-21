@@ -75,7 +75,7 @@ export default defineComponent({
           name: "state", label: "State", field: "state", sortable: true,
         },
         {
-          name: "created", label: "Created Date", field: "created", format: (val: number) => date.formatDate(val, "DD/MM/YY"),
+          name: "created", label: "Created Date", field: "created", format: (val: number) => date.formatDate(val * 1000, "DD/MM/YY"),
         },
       ],
       cells: [] as Array<ICell>,

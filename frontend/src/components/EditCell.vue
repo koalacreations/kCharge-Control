@@ -7,25 +7,32 @@
     <q-form
       @submit="onSubmit"
       v-if="cell.cellType"
-      class="q-gutter-md"
+      class="q-gutter-y-md column"
     >
-      <q-input
-        outlined
-        v-model="cell.id"
-        disable
-        label="Cell ID"
-      />
-      <q-input
-        outlined
-        v-model="cell.cellType.name"
-        disable
-        label="Cell Type"
-      />
+      <div class="row q-col-gutter-x-md">
+        <div class="col-xs-4 col-md-3">
+          <q-input
+            outlined
+            v-model="cell.id"
+            disable
+            label="ID"
+          />
+        </div>
+        <div class="col">
+          <q-input
+            outlined
+            v-model="cell.cellType.name"
+            disable
+            label="Type"
+          />
+        </div>
+      </div>
+
       <q-select
         outlined
         v-model="cellState"
         :options="options"
-        label="Outlined"
+        label="State"
       >
         <template v-slot:option="scope">
           <q-item

@@ -1,6 +1,9 @@
 <template>
   <q-page class="row items-center justify-evenly">
-    <edit-cell :cell-id="cellId" />
+    <edit-cell
+      class="edit-cell"
+      :cell-id="cellId"
+    />
   </q-page>
 </template>
 
@@ -18,3 +21,17 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+.edit-cell {
+  width: 50%;
+  max-width: 500px;
+}
+
+@media (max-width: $breakpoint-xs-max) {
+  .edit-cell {
+    width: 80%;
+    max-width: 500px;
+  }
+}
+</style>

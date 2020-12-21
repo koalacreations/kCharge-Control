@@ -18,10 +18,16 @@ const routes: RouteConfig[] = [
         name: "cellDatabase", path: "", component: () => import("pages/CellDatabase.vue"), meta: { title: "Cell Database" },
       },
       {
-        name: "editCell", path: ":cellId", component: () => import("pages/EditCellPage.vue"), meta: { title: "Edit Cell" },
-      },
-      {
         name: "cellDatabaseDefault", path: "*", component: () => import("pages/CellDatabase.vue"), meta: { title: "Cell Database" },
+      },
+    ],
+  },
+  {
+    path: "/cell/",
+    component: () => import("layouts/MainLayout.vue"),
+    children: [
+      {
+        name: "editCell", path: ":cellId", component: () => import("pages/EditCellPage.vue"), meta: { title: "Edit Cell" },
       },
     ],
   },

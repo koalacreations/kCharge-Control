@@ -17,7 +17,7 @@
         color="white"
         text-color="blue"
         unelevated
-        to="/dashboard"
+        :to="{name: 'dashboard'}"
         label="Go to the dashboard"
         no-caps
       />
