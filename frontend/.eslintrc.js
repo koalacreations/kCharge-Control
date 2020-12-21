@@ -17,22 +17,12 @@ module.exports = {
     browser: true
   },
 
-  // Rules order is important, please avoid shuffling them
   extends: [
-    // Base ESLint recommended rules
-    // 'eslint:recommended',
-
-    // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin#usage
-    // ESLint typescript rules
     'plugin:@typescript-eslint/recommended',
     // consider disabling this class of rules if linting takes too long
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
-
-    // Uncomment any of the lines below to choose desired strictness,
-    // but leave only one uncommented!
-    // See https://eslint.vuejs.org/rules/#available-rules
-    'plugin:vue/essential', // Priority A: Essential (Error Prevention)
-    // 'plugin:vue/strongly-recommended', // Priority B: Strongly Recommended (Improving Readability)
+    // 'plugin:vue/essential', // Priority A: Essential (Error Prevention)
+    'plugin:vue/strongly-recommended', // Priority B: Strongly Recommended (Improving Readability)
     // 'plugin:vue/recommended', // Priority C: Recommended (Minimizing Arbitrary Choices and Cognitive Overhead)
 
     'airbnb-base'
@@ -65,7 +55,6 @@ module.exports = {
     'import/namespace': 'error',
     'import/default': 'error',
     'import/export': 'error',
-    'import/extensions': 'off',
     'import/no-unresolved': 'off',
     'import/no-extraneous-dependencies': 'off',
     'import/prefer-default-export': 'off',
@@ -82,7 +71,13 @@ module.exports = {
     semi: ["error", "always"],
     quotes: ["error", "double"],
     "no-unused-vars": ["warn"],
-    "import/extensions": ["warn", "never"],
+    "import/extensions": [
+      "warn",
+      "never",
+      {
+        "vue": "always"
+      }
+    ],
     radix: ["warn", "as-needed"],
     "no-empty-function": "off",
     "@typescript-eslint/no-empty-function": "off"

@@ -1,18 +1,30 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-dialog ref="addCellDialog" v-model="newCellDialog" persistent
-    transition-show="scale" transition-hide="scale">
+    <q-dialog
+      ref="addCellDialog"
+      v-model="newCellDialog"
+      persistent
+      transition-show="scale"
+      transition-hide="scale"
+    >
       <q-card style="max-width: 350px">
         <q-card-section>
-          <div class="text-h6">Add or find a cell</div>
+          <div class="text-h6">
+            Add or find a cell
+          </div>
         </q-card-section>
 
-         <q-card-section class="q-pt-none">
-          <scan-cell/>
+        <q-card-section class="q-pt-none">
+          <scan-cell />
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Close" v-close-popup />
+          <q-btn
+            flat
+            label="Close"
+            @click="stopVideo()"
+            v-close-popup
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -32,9 +44,14 @@
           jCharge
         </q-toolbar-title>
 
-        <q-space/>
+        <q-space />
 
-        <q-btn round flat icon="mdi-battery" @click="newCellDialog = true">
+        <q-btn
+          round
+          flat
+          icon="mdi-battery"
+          @click="newCellDialog = true"
+        >
           <q-tooltip :delay="500">
             Add or find a cell
           </q-tooltip>
@@ -68,7 +85,7 @@
   </q-layout>
 </template>
 
-<script lang="ts">
+<script lang="ts" >
 import EssentialLink from "components/EssentialLink.vue";
 import { defineComponent, ref } from "@vue/composition-api";
 import ScanCell from "components/ScanCell.vue";
@@ -122,6 +139,20 @@ export default defineComponent({
   },
   computed: {
     ...mapGetters("devices", ["getDevices"]),
+  },
+  methods: {
+    stopVideo() {
+      const elem = document.getElementById("video") as HTMLVideoElement;
+      const stream = elem.srcObject;
+      const tracks = (stream as MediaStream).getTracks();
+
+      tracks.forEach((track: MediaStreamTrack) => {
+        track.stop();
+      });
+
+      elem.srcObject = null;
+      this.capturing = false;
+    },
   },
 });
 </script>

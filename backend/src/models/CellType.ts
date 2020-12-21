@@ -8,14 +8,14 @@ import { Cell } from "./Cell";
 @Unique(["id"])
 export class CellType extends BaseEntity {
     @PrimaryColumn()
-    id: string;
+    id!: string;
 
     @Column()
-    name: string;
+    name!: string;
 
     @Column({ default: () => Math.floor(new Date().getTime() / 1000) })
-    created: number;
+    created!: number;
 
     @OneToMany(() => Cell, (cell) => cell.cellType)
-    cells: Cell[];
+    cells!: Cell[];
 }

@@ -1,10 +1,10 @@
 <template>
   <q-page class="row items-center justify-evenly">
-    <edit-cell :cellId="cellId" />
+    <edit-cell :cell-id="cellId" />
   </q-page>
 </template>
 
-<script lang="ts">
+<script lang="ts" >
 import { defineComponent } from "@vue/composition-api";
 import EditCell from "src/components/EditCell.vue";
 
@@ -13,8 +13,8 @@ export default defineComponent({
   name: "EditCellPage",
   computed: {
     cellId() {
-      return this.$route.params.cellId
-    }
-  }
+      return this.$route.params.cellId;
+    },
+  },
 });
 </script>

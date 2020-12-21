@@ -9,17 +9,45 @@
       :grid="gridMode"
     >
       <template v-slot:top-right>
-        <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
+        <q-input
+          borderless
+          dense
+          debounce="300"
+          v-model="filter"
+          placeholder="Search"
+        >
           <template v-slot:append>
             <q-icon name="mdi-magnify" />
           </template>
         </q-input>
       </template>
+
+      <template v-slot:body="props">
+        <q-tr
+          :props="props"
+        >
+          <q-td
+            v-for="col in props.cols"
+            :key="col.name"
+            :props="props"
+          >
+            <router-link
+              v-if="col.label === 'Cell ID'"
+              :to="{name: 'editCell', params: { cellId: props.row.id }}"
+            >
+              {{ col.value }}
+            </router-link>
+            <template v-else>
+              {{ col.value }}
+            </template>
+          </q-td>
+        </q-tr>
+      </template>
     </q-table>
   </q-page>
 </template>
 
-<script lang="ts">
+<script lang="ts" >
 import { defineComponent } from "@vue/composition-api";
 import { date } from "quasar";
 import { ICell, ICellType } from "../../../backend/src/models/Cell";

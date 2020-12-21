@@ -24,7 +24,7 @@ export default route<Store<StateInterface>>(({ Vue }) => {
     base: process.env.VUE_ROUTER_BASE,
   });
 
-  Router.afterEach((to, from) => {
+  Router.afterEach((to) => {
     document.title = (to.meta as RouteMeta).title;
   });
 

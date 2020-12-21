@@ -4,20 +4,43 @@
       Add or find a cell by scanning it's QR Code.
     </div>
 
-    <div id="cell-status" class="q-my-sm" v-if="error">
+    <div
+      id="cell-status"
+      class="q-my-sm"
+      v-if="error"
+    >
       <h6 class="q-my-none">
         There was an error adding or finding this cell.
       </h6>
     </div>
 
-    <q-banner rounded v-if="retrieved.cellId" class="q-my-sm" :class="{'bg-primary': exists, 'bg-green-4': createdNew}">
-      <div class="text-h6" v-if="createdNew">Added New Cell</div>
-      <div class="text-h6" v-else>Found Existing Cell</div>
-      <div>Type: {{retrieved.cellType}}</div>
-      <div>ID: {{retrieved.cellId}}</div>
+    <q-banner
+      rounded
+      v-if="retrieved.cellId"
+      class="q-my-sm"
+      :class="{'bg-primary': exists, 'bg-green-4': createdNew}"
+    >
+      <div
+        class="text-h6"
+        v-if="createdNew"
+      >
+        Added New Cell
+      </div>
+      <div
+        class="text-h6"
+        v-else
+      >
+        Found Existing Cell
+      </div>
+      <div>Type: {{ retrieved.cellType }}</div>
+      <div>ID: {{ retrieved.cellId }}</div>
     </q-banner>
 
-    <div id="cell-status" class="q-pt-md" v-if="loading">
+    <div
+      id="cell-status"
+      class="q-pt-md"
+      v-if="loading"
+    >
       <div class="text-h6">
         Processing...
       </div>
@@ -33,19 +56,30 @@
       </div>
     </div>
 
-    <q-btn v-if="exists || createdNew || error" color="primary" class="q-mr-sm" label="New Scan"
-      @click="restartScan()" />
-    <q-btn v-if="exists || createdNew" color="primary" label="View Cell" @click="viewCell()" v-close-popup />
+    <q-btn
+      v-if="exists || createdNew || error"
+      color="primary"
+      class="q-mr-sm"
+      label="New Scan"
+      @click="restartScan()"
+    />
+    <q-btn
+      v-if="exists || createdNew"
+      color="primary"
+      label="View Cell"
+      @click="viewCell()"
+      v-close-popup
+    />
 
     <video
       v-if="capturing"
       style="width:100%;"
       id="video"
-    ></video>
+    />
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" >
 import { defineComponent } from "@vue/composition-api";
 import { BrowserQRCodeReader } from "@zxing/library";
 import { AxiosError } from "axios";
@@ -146,7 +180,7 @@ export default defineComponent({
       await this.startScan();
     },
     viewCell() {
-      void this.$router.push({ name: "editCell", params: { cellId: String(this.retrieved.cellId) } });
+      this.$router.push({ name: "editCell", params: { cellId: String(this.retrieved.cellId) } }).catch(() => {});
     },
   },
 });

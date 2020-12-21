@@ -24,7 +24,7 @@ A jCharge Control packet is defined as a single JSON object that follows the for
 
 ```
 {
-	"version": 1, // protocol version
+	"version": 1,
 	"command": "commandName",
 	"payload": {}
 }
@@ -39,7 +39,7 @@ The auto discovery mechanism works as follows:
 * Every 3-10 seconds the jCharge Control server **must** send out a `hello` packet to the broadcast address on port `54321`.
 * Once a testing device receives a `hello` packet, it **should** attempt to open a websocket connection to the IP address and port included in the `hello` packet.
 * A testing device **must** send a `helloServer` packet before any other packets after opening a websocket connection.
-* A jCharge backend server **may** choose to close the websocket connection, or, wait for a valid `hello` packet before attempting to parse any more packets from that device.
+* A jCharge backend server **may** choose to close the websocket connection, or, wait for a valid `helloServer` packet before attempting to parse any more packets from that device.
 
 ## Command Definitions
 Each command definition below is a valid jCharge Control command. Any commands *not* listed below **must** be ignored. The title of each command definition should be used in the `command` key and the object listed under each title should be used in the `payload` key of the jCharge Control Packet. Each command **should** only be sent to the devices listed under each command (ie only to server or only to a device).
@@ -255,7 +255,7 @@ A `device` is a battery cell charger/discharger etc. that is connecting to a jCh
 ```
 
 #### Notes
-* Requests that a specified action is started on the specified channel. The device **should** ignore it and respond with a `reportError` packet if it is not implemented on the device.
+* Requests that a specified action is started on the specified channel. The device **should** ignore it and respond with a `reportMessage` packet if it is not implemented on the device.
 * `rate` the rate of charge/discharge in mA. This value will be `null` if the device reported it's not implemented.
 * `cutoffVoltage` the voltage (in mV) at which the device should stop charging/discharging. This value will be set to `null` if the device reported it's not implemented.
 * A device **may** ignore this command if it doesn't want to implement it.

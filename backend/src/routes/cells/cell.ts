@@ -7,20 +7,18 @@ const get = async (request: Request, h: ResponseToolkit) => {
 
   if (!cell) throw Boom.notFound();
 
-  console.log(cell);
   return cell;
 };
 
 const put = async (request: Request, h: ResponseToolkit) => {
   const cell = await Cell.findOne(request.params.id);
-  console.log("yolo");
-  console.log(request.params.id);
 
   if (!cell) throw Boom.notFound();
 
   const cellPayload = request.payload as ICell;
 
   cell.class = cellPayload.class;
+  cell.state = (<any>Cell.CellState)[cellPayload.state];
   cell.save();
 
   return cell;

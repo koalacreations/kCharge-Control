@@ -1,6 +1,6 @@
 import * as Hapi from "@hapi/hapi";
 import "reflect-metadata";
-import { Connection, createConnection } from "typeorm";
+import { createConnection } from "typeorm";
 import { connect } from "socket.io-client";
 import routes from "./routes";
 import { Cell } from "./models/Cell";
@@ -11,6 +11,7 @@ const init = async () => {
   const server = new Hapi.Server({
     port: 3000,
     host: "0.0.0.0",
+    debug: { request: ["error"] },
   });
 
   server.events.on("response", (request) => {

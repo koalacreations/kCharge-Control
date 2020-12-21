@@ -9,21 +9,21 @@ import { CellType } from "./CellType";
 // eslint-disable-next-line import/export
 export class Cell extends BaseEntity {
     @PrimaryColumn()
-    id: number;
+    id!: number;
 
     @Column()
-    state: Cell.CellState;
+    state!: Cell.CellState;
 
     @Column()
-    class: Cell.CellClass;
+    class!: Cell.CellClass;
 
     @ManyToOne(() => CellType, (cellType) => cellType.cells, {
       eager: true,
     })
-    cellType: CellType;
+    cellType!: CellType;
 
     @Column({ default: () => Math.floor(new Date().getTime() / 1000) })
-    created: number;
+    created!: number;
 }
 
 // eslint-disable-next-line no-redeclare, import/export
@@ -35,9 +35,7 @@ export namespace Cell {
     Charged = "charged",
     Discharging = "discharging",
     Discharged = "discharged",
-    Error = "error",
-    VoltageHigh = "voltagehigh",
-    VoltageLow = "voltagelow"
+    Discard = "discard",
   }
 
   // eslint-disable-next-line no-shadow
