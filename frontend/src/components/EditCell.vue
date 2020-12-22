@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h5>
+    <h5 class="q-mb-md">
       Edit this cell
     </h5>
 
@@ -33,6 +33,7 @@
         v-model="cellState"
         :options="options"
         label="State"
+        @input="onSubmit()"
       >
         <template v-slot:option="scope">
           <q-item
@@ -50,6 +51,21 @@
             </q-item-section>
           </q-item>
         </template>
+
+        <template v-slot:selected>
+          <q-item-section avatar>
+            <q-icon :name="cellState.icon" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label v-html="cellState.label" />
+            <q-item-label
+              caption
+              :class="{'text-white': darkMode }"
+            >
+              {{ cellState.description }}
+            </q-item-label>
+          </q-item-section>
+        </template>
       </q-select>
 
       <q-checkbox
@@ -58,14 +74,43 @@
         label="Is this a heater cell?"
         true-value="heater"
         false-value="normal"
+        @input="onSubmit()"
       />
 
-      <div>
+      <q-item-label>
+        Quick Actions
+      </q-item-label>
+      <div class="row q-gutter-sm">
         <q-btn
-          label="Submit"
-          type="submit"
+          round
           color="primary"
-        />
+          icon="mdi-battery-high"
+          @click="setStateAndSubmit('Charged')"
+        >
+          <q-tooltip :delay="500">
+            Set fully charged
+          </q-tooltip>
+        </q-btn>
+        <q-btn
+          round
+          color="primary"
+          icon="mdi-battery-low"
+          @click="setStateAndSubmit('Discharged')"
+        >
+          <q-tooltip :delay="500">
+            Set fully discharged
+          </q-tooltip>
+        </q-btn>
+        <q-btn
+          round
+          color="primary"
+          icon="mdi-new-box"
+          @click="setStateAndSubmit('New')"
+        >
+          <q-tooltip :delay="500">
+            Set as new cell
+          </q-tooltip>
+        </q-btn>
       </div>
     </q-form>
 
@@ -98,46 +143,46 @@ export default defineComponent({
           label: "Charged",
           value: "charged",
           description: "Fully charged cell",
-          icon: "mdi-battery-high",
+          icon: "mdi-battery-high"
         },
         {
           label: "Storage",
           value: "storage",
-          description: "Cell at storage voltage",
-          icon: "mdi-battery-medium",
+          description: "Cell is at storage voltage",
+          icon: "mdi-battery-medium"
         },
         {
           label: "Discharged",
           value: "discharged",
           description: "Fully discharged cell",
-          icon: "mdi-battery-low",
+          icon: "mdi-battery-low"
         },
         {
           label: "Charging",
           value: "charging",
           description: "Currently charging",
-          icon: "mdi-battery-charging-high",
+          icon: "mdi-battery-charging-high"
         },
         {
           label: "Discharging",
           value: "discharging",
           description: "Currently discharging",
-          icon: "mdi-battery-charging-low",
+          icon: "mdi-battery-charging-low"
         },
         {
           label: "New",
           value: "new",
           description: "Newly added cell",
-          icon: "mdi-new-box",
-        },
-      ],
+          icon: "mdi-new-box"
+        }
+      ]
     };
   },
   props: {
     cellId: {
       type: [String, Number],
-      required: true,
-    },
+      required: true
+    }
   },
   async mounted() {
     await this.retrieveCell();
@@ -145,7 +190,12 @@ export default defineComponent({
   watch: {
     cellState() {
       this.cell.state = (this.cellState as QSelect).value as string;
-    },
+    }
+  },
+  computed: {
+    darkMode(): boolean {
+      return this.$q.dark.isActive;
+    }
   },
   methods: {
     async retrieveCell() {
@@ -160,7 +210,7 @@ export default defineComponent({
           label: "Unknown",
           value: "unknown",
           description: "Unknown state from database",
-          icon: "mdi-help",
+          icon: "mdi-help"
         };
       }
     },
@@ -170,17 +220,24 @@ export default defineComponent({
           color: "green-4",
           textColor: "white",
           icon: "mdi-check",
-          message: "Saved",
+          message: "Saved"
         });
       }).catch(() => {
         this.$q.notify({
           color: "red-4",
           textColor: "white",
           icon: "mdi-alert-circle",
-          message: "Error",
+          message: "Error"
         });
       });
     },
-  },
+    setStateAndSubmit(state: string) {
+      const foundState = this.options.find((option) => option.label === state);
+      if (foundState) {
+        this.cellState = foundState;
+        this.onSubmit();
+      }
+    }
+  }
 });
 </script>

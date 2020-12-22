@@ -9,8 +9,7 @@ export interface IMessage {
   value: string;
 }
 
-const sendMessage = (socket: Socket | Server) =>
-  (message: IMessage) => socket.emit("message", message);
+const sendMessage = (socket: Socket | Server) => (message: IMessage) => socket.emit("message", message);
 
 export default (io: Server) => {
   const messages: Set<IMessage> = new Set();

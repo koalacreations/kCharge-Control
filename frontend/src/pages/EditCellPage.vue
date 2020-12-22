@@ -17,8 +17,8 @@ export default defineComponent({
   computed: {
     cellId() {
       return this.$route.params.cellId;
-    },
-  },
+    }
+  }
 });
 </script>
 

@@ -5,3 +5,5 @@ src-cordova
 .quasar
 node_modules
 src-ssr
+src-electron/main-process/electron-main.dev.js
+src-electron/main-process/electron-main.js

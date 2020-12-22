@@ -1,9 +1,8 @@
 import * as Hapi from "@hapi/hapi";
 import "reflect-metadata";
 import { createConnection } from "typeorm";
-import { connect } from "socket.io-client";
+// import { connect } from "socket.io-client";
 import routes from "./routes";
-import { Cell } from "./models/Cell";
 
 const pjson = require("../package.json");
 
@@ -15,7 +14,12 @@ const init = async () => {
   });
 
   server.events.on("response", (request) => {
-    console.log(`${request.info.remoteAddress}: ${request.method.toUpperCase()} ${request.path}`);
+    // eslint-disable-next-line no-console
+    console.log(
+      `${request.info.remoteAddress}: ${request.method.toUpperCase()} ${
+        request.path
+      }`
+    );
   });
 
   server.route(routes);
@@ -23,20 +27,22 @@ const init = async () => {
   server.route({
     method: "GET",
     path: "/",
-    handler: (request, h) => ({
+    handler: () => ({
       message: "You've reached the jCharge API.",
       version: pjson.version,
     }),
   });
 
   await server.start();
+  // eslint-disable-next-line no-console
   console.log("Server running on %s", server.info.uri);
 
-  const connection = await createConnection();
+  await createConnection();
 };
 
 process.on("unhandledRejection", (err) => {
-  console.log(err);
+  // eslint-disable-next-line no-console
+  console.error(err);
   process.exit(1);
 });
 

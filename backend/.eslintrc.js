@@ -1,7 +1,7 @@
 module.exports = {
   root: true,
   env: {
-    browser: true,
+    browser: false,
     es2021: true,
   },
   settings: {

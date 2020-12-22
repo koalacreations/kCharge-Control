@@ -7,6 +7,11 @@
       row-key="id"
       :filter="filter"
       :grid="gridMode"
+      :pagination="{
+        sortBy: 'desc',
+        descending: false,
+        rowsPerPage: this.$q.screen.xs ? 3 : 10,
+      }"
     >
       <template v-slot:top-right>
         <q-input
@@ -59,26 +64,26 @@ export default defineComponent({
       filter: "",
       columns: [
         {
-          name: "id", align: "center", label: "Cell ID", field: "id", sortable: true,
+          name: "id", align: "center", label: "Cell ID", field: "id", sortable: true
         },
         {
           name: "type",
           label: "Type",
           field: "cellType",
           sortable: true,
-          format: (val: ICellType) => val.name,
+          format: (val: ICellType) => val.name
         },
         {
-          name: "class", label: "Class", field: "class", sortable: true,
+          name: "class", label: "Class", field: "class", sortable: true
         },
         {
-          name: "state", label: "State", field: "state", sortable: true,
+          name: "state", label: "State", field: "state", sortable: true
         },
         {
-          name: "created", label: "Created Date", field: "created", format: (val: number) => date.formatDate(val * 1000, "DD/MM/YY"),
-        },
+          name: "created", label: "Created Date", field: "created", format: (val: number) => date.formatDate(val * 1000, "DD/MM/YY")
+        }
       ],
-      cells: [] as Array<ICell>,
+      cells: [] as Array<ICell>
     };
   },
   beforeMount() {
@@ -90,7 +95,7 @@ export default defineComponent({
   computed: {
     gridMode() {
       return this.$q.screen.lt.sm;
-    },
-  },
+    }
+  }
 });
 </script>

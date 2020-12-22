@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
+      "target": "esnext",
       "module": "commonjs",
       "esModuleInterop": true,
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
-      "target": "es6",
       "noImplicitAny": true,
       "moduleResolution": "node",
       "sourceMap": true,
@@ -16,9 +16,6 @@
         ]
       }
     },
-    "include": [
-      "src/**/*"
-    ],
     "exclude": [
       "src/client"
     ]

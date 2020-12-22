@@ -19,10 +19,10 @@ export default store(({ Vue }) => {
 
   const Store = new Vuex.Store<StateInterface>({
     modules: {
-      devices,
+      devices
     },
 
-    strict: !!process.env.DEBUGGING,
+    strict: !!process.env.DEBUGGING
   });
 
   return Store;

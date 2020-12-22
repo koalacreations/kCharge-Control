@@ -55,33 +55,33 @@ export default defineComponent({
     separator: {
       type: Boolean,
       required: false,
-      default: false,
+      default: false
     },
 
     title: {
       type: String,
-      required: false,
+      required: false
     },
 
     caption: {
       type: String,
-      default: "",
+      default: ""
     },
 
     link: {
       type: String,
-      default: null,
+      default: null
     },
 
     to: {
       type: Object,
-      default: null,
+      default: null
     },
 
     icon: {
       type: String,
-      default: "",
-    },
-  },
+      default: ""
+    }
+  }
 });
 </script>

@@ -1,9 +1,9 @@
-import { Request, ResponseToolkit } from "@hapi/hapi";
+import { ResponseToolkit } from "@hapi/hapi";
 import Boom from "@hapi/boom";
 import { Cell } from "../../models/Cell";
 import { CellType } from "../../models/CellType";
 
-const get = async (request: Request, h: ResponseToolkit) => {
+const get = async () => {
   const cell = await Cell.find();
 
   return cell;
@@ -21,14 +21,12 @@ const post = async (request: any, h: ResponseToolkit) => {
     }).save();
   }
 
-  const newCell = await Cell.create(
-    {
-      id: request.payload.id,
-      cellType,
-      state: Cell.CellState.New,
-      class: Cell.CellClass.Normal,
-    },
-  ).save();
+  const newCell = await Cell.create({
+    id: request.payload.id,
+    cellType,
+    state: Cell.CellState.new,
+    class: Cell.CellClass.normal,
+  }).save();
 
   return h.response(newCell).code(201);
 };

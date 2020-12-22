@@ -15,8 +15,8 @@ module.exports = configure((ctx) => ({
   // https://quasar.dev/quasar-cli/supporting-ts
   supportTS: {
     tsCheckerConfig: {
-      eslint: true,
-    },
+      eslint: true
+    }
   },
 
   // https://quasar.dev/quasar-cli/prefetch-feature
@@ -28,12 +28,12 @@ module.exports = configure((ctx) => ({
   boot: [
     "composition-api",
     "i18n",
-    "axios",
+    "axios"
   ],
 
   // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
   css: [
-    "app.scss",
+    "app.scss"
   ],
 
   // https://github.com/quasarframework/quasar/tree/dev/extras
@@ -46,7 +46,7 @@ module.exports = configure((ctx) => ({
     // 'line-awesome',
     // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
-    "roboto-font", // optional, you are not bound to it
+    "roboto-font" // optional, you are not bound to it
     // 'material-icons', // optional, you are not bound to it
   ],
 
@@ -78,10 +78,10 @@ module.exports = configure((ctx) => ({
           enforce: "pre",
           test: /\.(js|vue)$/,
           loader: "eslint-loader",
-          exclude: /node_modules/,
+          exclude: /node_modules/
         });
       }
-    },
+    }
   },
 
   // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
@@ -93,9 +93,9 @@ module.exports = configure((ctx) => ({
       // proxy all requests starting with /api to
       "/api": {
         target: "http://localhost:3000",
-        changeOrigin: false,
-      },
-    },
+        changeOrigin: false
+      }
+    }
   },
 
   // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
@@ -103,7 +103,7 @@ module.exports = configure((ctx) => ({
     iconSet: "mdi-v5", // Quasar icon set
     lang: "en-us", // Quasar language pack
     config: {
-      dark: "auto",
+      dark: "auto"
     },
 
     // Possible values for "importStrategy":
@@ -119,7 +119,7 @@ module.exports = configure((ctx) => ({
     // directives: [],
 
     // Quasar plugins
-    plugins: ["Notify"],
+    plugins: ["Notify", "Dialog"]
   },
 
   // animations: 'all', // --- includes all animations
@@ -128,7 +128,7 @@ module.exports = configure((ctx) => ({
 
   // https://quasar.dev/quasar-cli/developing-ssr/configuring-ssr
   ssr: {
-    pwa: false,
+    pwa: false
   },
 
   // https://quasar.dev/quasar-cli/developing-pwa/configuring-pwa
@@ -147,30 +147,30 @@ module.exports = configure((ctx) => ({
         {
           src: "icons/icon-128x128.png",
           sizes: "128x128",
-          type: "image/png",
+          type: "image/png"
         },
         {
           src: "icons/icon-192x192.png",
           sizes: "192x192",
-          type: "image/png",
+          type: "image/png"
         },
         {
           src: "icons/icon-256x256.png",
           sizes: "256x256",
-          type: "image/png",
+          type: "image/png"
         },
         {
           src: "icons/icon-384x384.png",
           sizes: "384x384",
-          type: "image/png",
+          type: "image/png"
         },
         {
           src: "icons/icon-512x512.png",
           sizes: "512x512",
-          type: "image/png",
-        },
-      ],
-    },
+          type: "image/png"
+        }
+      ]
+    }
   },
 
   // Full list of options: https://quasar.dev/quasar-cli/developing-cordova-apps/configuring-cordova
@@ -180,7 +180,7 @@ module.exports = configure((ctx) => ({
 
   // Full list of options: https://quasar.dev/quasar-cli/developing-capacitor-apps/configuring-capacitor
   capacitor: {
-    hideSplashscreen: true,
+    hideSplashscreen: true
   },
 
   // Full list of options: https://quasar.dev/quasar-cli/developing-electron-apps/configuring-electron
@@ -188,22 +188,16 @@ module.exports = configure((ctx) => ({
     bundler: "packager", // 'packager' or 'builder'
 
     packager: {
-      // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
-
-      // OS X / Mac App Store
-      // appBundleId: '',
-      // appCategoryType: '',
-      // osxSign: '',
-      // protocol: 'myapp://path',
+      arch: ["arm64", "x64"],
+      platform: ["darwin", "win32"],
+      appCopyright: "Jaimyn Mayer 2020",
+      appCategoryType: "public.app-category.developer-tools",
+      osxSign: {
+        identity: "LM4YQR3WT4"
+      }
 
       // Windows only
       // win32metadata: { ... }
-    },
-
-    builder: {
-      // https://www.electron.build/configuration/configuration
-
-      appId: "frontend",
     },
 
     // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration
@@ -212,6 +206,6 @@ module.exports = configure((ctx) => ({
     extendWebpack(/* cfg */) {
       // do something with Electron main process Webpack cfg
       // chainWebpack also available besides this extendWebpack
-    },
-  },
+    }
+  }
 }));

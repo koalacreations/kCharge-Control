@@ -10,7 +10,7 @@
       <q-card style="max-width: 350px">
         <q-card-section>
           <div class="text-h6">
-            Add or find a cell
+            Search for or add a cell
           </div>
         </q-card-section>
 
@@ -31,14 +31,27 @@
 
     <q-header elevated>
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="mdi-menu"
-          aria-label="Menu"
-          @click="leftDrawerOpen = !leftDrawerOpen"
-        />
+        <template v-if="true">
+          <q-btn
+            flat
+            dense
+            round
+            icon="mdi-menu"
+            aria-label="Menu"
+            @click="leftDrawerOpen = !leftDrawerOpen"
+          />
+        </template>
+
+        <template v-else>
+          <q-btn
+            flat
+            dense
+            round
+            icon="mdi-menu"
+            aria-label="Menu"
+            @click="leftDrawerOpen = !leftDrawerOpen"
+          />
+        </template>
 
         <q-toolbar-title>
           jCharge
@@ -96,32 +109,32 @@ const linksData = [
     title: "Dashboard",
     caption: "Main jCharge dashboard",
     icon: "mdi-view-dashboard",
-    to: { name: "dashboard" },
+    to: { name: "dashboard" }
   },
   {
     title: "Cell Database",
     caption: "Your cell database",
     icon: "mdi-battery",
-    to: { name: "cellDatabase" },
+    to: { name: "cellDatabase" }
   },
 
   {
-    separator: true,
+    separator: true
   },
 
   {
     title: "jCharge on Github",
     caption: "github.com/jabelone/jCharge",
     icon: "mdi-github",
-    link: "https://github.com/jabelone/jCharge",
-  },
+    link: "https://github.com/jabelone/jCharge"
+  }
 ];
 
 export default defineComponent({
   name: "MainLayout",
   data() {
     return {
-      newCellDialog: false,
+      newCellDialog: false
     };
   },
   beforeMount() {
@@ -138,7 +151,7 @@ export default defineComponent({
     return { leftDrawerOpen, essentialLinks };
   },
   computed: {
-    ...mapGetters("devices", ["getDevices"]),
+    ...mapGetters("devices", ["getDevices"])
   },
   methods: {
     stopVideo() {
@@ -152,7 +165,7 @@ export default defineComponent({
 
       elem.srcObject = null;
       this.capturing = false;
-    },
-  },
+    }
+  }
 });
 </script>

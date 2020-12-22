@@ -1,18 +1,16 @@
 <template>
   <div>
     <div class="q-mb-sm">
-      Add or find a cell by scanning it's QR Code.
+      Search for a cell (or add a new one) by scanning it's QR Code.
     </div>
 
-    <div
-      id="cell-status"
-      class="q-my-sm"
+    <q-banner
+      rounded
       v-if="error"
+      class="q-my-sm bg-red-4"
     >
-      <h6 class="q-my-none">
-        There was an error adding or finding this cell.
-      </h6>
-    </div>
+      There was an error searching for or adding this cell.
+    </q-banner>
 
     <q-banner
       rounded
@@ -100,16 +98,16 @@ export default defineComponent({
       cellId: 0,
       retrieved: {
         cellType: "",
-        cellId: 0,
-      },
+        cellId: 0
+      }
     };
   },
   props: {
     separator: {
       type: Boolean,
       required: false,
-      default: false,
-    },
+      default: false
+    }
   },
   async mounted() {
     await this.startScan();
@@ -134,9 +132,21 @@ export default defineComponent({
       this.retrieved.cellId = data.id;
     },
     async startScan() {
-      const qrCode = await codeReader.decodeOnceFromVideoDevice(undefined, "video");
-      const decoded = qrCode.getText().split(",");
-      this.stopVideo();
+      let decoded = null;
+      try {
+        const qrCode = await codeReader.decodeOnceFromVideoDevice(undefined, "video");
+        decoded = qrCode.getText().split(",");
+        this.stopVideo();
+      } catch (error) {
+        this.capturing = false;
+        this.loading = false;
+        this.createdNew = false;
+        this.error = true;
+        this.exists = false;
+        this.cellType = "";
+        this.cellId = 0;
+        return;
+      }
 
       // eslint-disable-next-line prefer-destructuring
       this.cellType = decoded[0];
@@ -144,13 +154,12 @@ export default defineComponent({
 
       this.loading = true;
       const response = await this.$axios.post("/api/cells/", { type: this.cellType, id: this.cellId })
-        .catch(async (error) => {
-          this.exists = true;
-
-          if ((error as AxiosError).response?.status === 409) {
-            await this.retrieveCell();
-            this.cellType = "";
-            this.cellId = 0;
+        .catch((error) => {
+          const cellResponse = (error as AxiosError).response;
+          if (cellResponse?.status === 409) {
+            this.exists = true;
+            this.retrieved.cellId = this.cellId;
+            this.viewCell();
           }
         })
         .finally(() => { this.loading = false; });
@@ -175,13 +184,14 @@ export default defineComponent({
       this.cellId = 0;
       this.retrieved = {
         cellType: "",
-        cellId: 0,
+        cellId: 0
       };
       await this.startScan();
     },
     viewCell() {
-      this.$router.push({ name: "editCell", params: { cellId: String(this.retrieved.cellId) } }).catch(() => {});
-    },
-  },
+      this.$emit("hide");
+      this.$router.replace({ name: "editCell", params: { cellId: String(this.retrieved.cellId) } }).catch(() => {});
+    }
+  }
 });
 </script>

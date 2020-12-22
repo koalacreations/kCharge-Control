@@ -1,8 +1,8 @@
-import { Request, ResponseToolkit } from "@hapi/hapi";
+import { Request } from "@hapi/hapi";
 import Boom from "@hapi/boom";
 import { Cell } from "../../models/Cell";
 
-const get = async (request: Request, h: ResponseToolkit) => {
+const get = async (request: Request) => {
   const cell = await Cell.findOne(request.params.id);
 
   if (!cell) throw Boom.notFound();
@@ -10,7 +10,7 @@ const get = async (request: Request, h: ResponseToolkit) => {
   return cell;
 };
 
-const remove = async (request: Request, h: ResponseToolkit) => {
+const remove = async (request: Request) => {
   const cell = await Cell.findOne(request.params.id);
   if (!cell) throw Boom.notFound();
 
