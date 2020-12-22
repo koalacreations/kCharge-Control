@@ -1,0 +1,7 @@
+{
+  "appId": "dev.jaimyn.jcharge",
+  "appName": "jCharge Control",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www"
+}
