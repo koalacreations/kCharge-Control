@@ -15,7 +15,7 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <scan-cell />
+          <scan-cell @finished="newCellDialog = false" />
         </q-card-section>
 
         <q-card-actions align="right">

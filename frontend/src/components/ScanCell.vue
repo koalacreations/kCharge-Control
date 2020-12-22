@@ -12,28 +12,6 @@
       There was an error searching for or adding this cell.
     </q-banner>
 
-    <q-banner
-      rounded
-      v-if="retrieved.cellId"
-      class="q-my-sm"
-      :class="{'bg-primary': exists, 'bg-green-4': createdNew}"
-    >
-      <div
-        class="text-h6"
-        v-if="createdNew"
-      >
-        Added New Cell
-      </div>
-      <div
-        class="text-h6"
-        v-else
-      >
-        Found Existing Cell
-      </div>
-      <div>Type: {{ retrieved.cellType }}</div>
-      <div>ID: {{ retrieved.cellId }}</div>
-    </q-banner>
-
     <div
       id="cell-status"
       class="q-pt-md"
@@ -53,21 +31,6 @@
         />
       </div>
     </div>
-
-    <q-btn
-      v-if="exists || createdNew || error"
-      color="primary"
-      class="q-mr-sm"
-      label="New Scan"
-      @click="restartScan()"
-    />
-    <q-btn
-      v-if="exists || createdNew"
-      color="primary"
-      label="View Cell"
-      @click="viewCell()"
-      v-close-popup
-    />
 
     <video
       v-if="capturing"
@@ -91,9 +54,7 @@ export default defineComponent({
     return {
       capturing: true,
       loading: false,
-      exists: false,
       error: false,
-      createdNew: false,
       cellType: "",
       cellId: 0,
       retrieved: {
@@ -140,9 +101,7 @@ export default defineComponent({
       } catch (error) {
         this.capturing = false;
         this.loading = false;
-        this.createdNew = false;
         this.error = true;
-        this.exists = false;
         this.cellType = "";
         this.cellId = 0;
         return;
@@ -157,29 +116,30 @@ export default defineComponent({
         .catch((error) => {
           const cellResponse = (error as AxiosError).response;
           if (cellResponse?.status === 409) {
-            this.exists = true;
             this.retrieved.cellId = this.cellId;
             this.viewCell();
+          } else {
+            this.error = true;
           }
         })
         .finally(() => { this.loading = false; });
 
       if (response && response.status === 201) {
-        const data = response.data as ICell;
-        this.retrieved.cellType = data.cellType.name;
-        this.retrieved.cellId = data.id;
-        this.cellType = "";
-        this.cellId = 0;
-        this.createdNew = true;
-        this.loading = false;
+        this.$q.notify({
+          color: "green-4",
+          textColor: "white",
+          icon: "mdi-check",
+          message: "Added new cell!"
+        });
+
+        this.retrieved.cellId = this.cellId;
+        this.viewCell();
       }
     },
     async restartScan() {
       this.capturing = true;
       this.loading = false;
-      this.createdNew = false;
       this.error = false;
-      this.exists = false;
       this.cellType = "";
       this.cellId = 0;
       this.retrieved = {
@@ -189,7 +149,7 @@ export default defineComponent({
       await this.startScan();
     },
     viewCell() {
-      this.$emit("hide");
+      this.$emit("finished");
       this.$router.replace({ name: "editCell", params: { cellId: String(this.retrieved.cellId) } }).catch(() => {});
     }
   }
