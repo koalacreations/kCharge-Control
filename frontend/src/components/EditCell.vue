@@ -184,12 +184,15 @@ export default defineComponent({
       required: true
     }
   },
-  async mounted() {
-    await this.retrieveCell();
+  mounted() {
+    this.retrieveCell().catch(null);
   },
   watch: {
     cellState() {
       this.cell.state = (this.cellState as QSelect).value as string;
+    },
+    cellId() {
+      this.retrieveCell().catch(null);
     }
   },
   computed: {

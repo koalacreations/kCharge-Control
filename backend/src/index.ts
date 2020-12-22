@@ -10,6 +10,9 @@ const init = async () => {
   const server = new Hapi.Server({
     port: 3000,
     host: "0.0.0.0",
+    routes: {
+      cors: true,
+    },
     debug: { request: ["error"] },
   });
 

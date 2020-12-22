@@ -1,5 +1,5 @@
 <template>
-  <q-page class="row items-center justify-evenly">
+  <q-page class="row items-start justify-evenly q-pt-md">
     <q-table
       title="Cells"
       :data="cells"
@@ -10,8 +10,9 @@
       :pagination="{
         sortBy: 'desc',
         descending: false,
-        rowsPerPage: this.$q.screen.xs ? 3 : 10,
+        rowsPerPage: this.$q.screen.xs ? 2 : 10,
       }"
+      @row-click="onRowClick"
     >
       <template v-slot:top-right>
         <q-input
@@ -25,28 +26,6 @@
             <q-icon name="mdi-magnify" />
           </template>
         </q-input>
-      </template>
-
-      <template v-slot:body="props">
-        <q-tr
-          :props="props"
-        >
-          <q-td
-            v-for="col in props.cols"
-            :key="col.name"
-            :props="props"
-          >
-            <router-link
-              v-if="col.label === 'Cell ID'"
-              :to="{name: 'editCell', params: { cellId: props.row.id }}"
-            >
-              {{ col.value }}
-            </router-link>
-            <template v-else>
-              {{ col.value }}
-            </template>
-          </q-td>
-        </q-tr>
       </template>
     </q-table>
   </q-page>
@@ -86,7 +65,7 @@ export default defineComponent({
       cells: [] as Array<ICell>
     };
   },
-  beforeMount() {
+  mounted() {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.$axios.get("/api/cells/").then((result) => {
       this.cells = result.data as Array<ICell>;
@@ -95,6 +74,11 @@ export default defineComponent({
   computed: {
     gridMode() {
       return this.$q.screen.lt.sm;
+    }
+  },
+  methods: {
+    onRowClick(evt: InputEvent, row: ICell) {
+      this.$router.push({ name: "editCell", params: { cellId: String(row.id) } }).catch(() => {});
     }
   }
 });

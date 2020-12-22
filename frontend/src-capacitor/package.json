@@ -1,0 +1,13 @@
+{
+  "name": "jcharge-control",
+  "version": "0.0.1",
+  "description": "A battery testing and management platform",
+  "author": "Jaimyn <github@jaimyn.com.au>",
+  "private": true,
+  "dependencies": {
+    "@capacitor/cli": "^2.0.0",
+    "@capacitor/core": "^2.0.0",
+    "@capacitor/ios": "^2.4.5",
+    "@dutchconcepts/capacitor-barcode-scanner": "^1.1.1"
+  }
+}

@@ -8,6 +8,8 @@ declare module "vue/types/vue" {
 }
 
 export default boot(({ Vue }) => {
+  axios.defaults.baseURL = process.env.APIURL;
+
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   Vue.prototype.$axios = axios;
 });
