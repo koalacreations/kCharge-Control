@@ -3,5 +3,8 @@
   "appName": "jCharge Control",
   "bundledWebRuntime": false,
   "npmClient": "npm",
-  "webDir": "www"
+  "webDir": "www",
+  "server": {
+    "url": "http://192.168.0.202:8080"
+  }
 }

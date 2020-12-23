@@ -76,7 +76,7 @@ A `device` is a battery cell charger/discharger etc. that is connecting to a jCh
 #### Payload
 ```javascript
 {
-	"deviceId": "unique_identifier_of_device",
+	"id": "unique_identifier_of_device",
 	"deviceName": "name_of_device" | null,
 	"deviceManufacturer": "manufacturer_of_device" | null,
 	"deviceModel": "model_or_type_of_device" | null,
@@ -94,7 +94,7 @@ A `device` is a battery cell charger/discharger etc. that is connecting to a jCh
 
 #### Notes
 
-* `deviceId` must be unique. If a backend server receives a duplicate device ID, it **must** ignore the second device.
+* `id` must be unique. If a backend server receives a duplicate device ID, it **must** ignore the second device.
 * `deviceName` can be an optional string or `null`. This value **may** be overidden by a user in the UI.
 * `deviceManufacturer` and `deviceModel` are both optional and can be a string or `null`. Used for display purposes.
 * `channels` specify the number of channels that can be controlled and are expected when reporting status.
@@ -114,8 +114,9 @@ A `device` is a battery cell charger/discharger etc. that is connecting to a jCh
 {
 	"channels": [
 		{
-			"id": "channel_id",
-			"state": "empty" | "idle" | "charging" | "discharging" | "overVoltage" | "underVoltage" | "overTemperature" | "error",
+			"id": channel_id,
+			"state": "empty" | "idle" | "complete" | "charging" | "discharging" | "overVoltage" | "underVoltage" | "overTemperature" | "error",
+			"stage": "arbitrary_string",
 			"current": 1900,
 			"voltage": 4200,
 			"temperature": 25
@@ -126,13 +127,28 @@ A `device` is a battery cell charger/discharger etc. that is connecting to a jCh
 
 #### Notes
 
-* `channels` must contain an array of channel objects for *all* device channels. Channels **should** be sorted alphanumerically (ie 1, 2, 3 or a, b, c) based on the `id` when viewing in the UI.
-* `id` **must** be unique per device and **should** be a single number or character.
+* `channels` must contain an array of channel objects for *all* device channels. Channels **should** be sorted numerically (ie 1, 2, 3) based on the `id` when viewing in the UI.
+* `id` **must** be unique per device and **must** be a number.
 * `state` **must** contain one of the options defined above. `empty` means no cell detected and `idle` means a cell is detected but nothing is currently happening.
+* `stage` may be specified or set to null. A device can specify what stage of the state it's at (e.g. it could be "resting" to allow voltage to settle before performing an IR measurement, etc.)
 * `current` is the current measured on the channel in mA.
 * `voltage` is the voltage measured on the channel in mV.
-* `temperature` is the temperature measured on the channel in degrees Celsius. It **must** be a float or int.
+* `temperature` is the temperature measured on the channel in degrees Celsius. It **must** be a number or `null`.
 * A device **may** send a `deviceStatus` message as often as reasonable (for example each time a channel status or measurement changes) but **should** be about every 1-5 seconds.
+
+#### LED Guidelines
+For devices that have a status LED on each channel (or another similar status interface) the following colours and animations **should** be used for the following states:
+
+* Empty (ready for cell insertion) - solid blue
+* Idle (cell inserted, but no current action) - solid orange
+* Action in progress (dis/charge, ir measurement, etc) - flashing orange (~ 1hz)
+* Action complete (cell inserted, and action has completed) - solid green
+	* This should revert to the empty colour/state once the cell is removed.
+
+Note that for all "error" conditions - the device will not proceed until it is rectified.
+
+* Error (under/over voltage) - fast flashing red (~ 2hz)
+* Error (any other error) - flashing red (~ 1hz)
 
 --
 
@@ -143,7 +159,7 @@ A `device` is a battery cell charger/discharger etc. that is connecting to a jCh
 #### Payload
 ```javascript
 {
-	"channel": "channel_id",
+	"channel": channel_id,
 	"startVoltage": 4200 | null,
 	"endVoltage": 3000,
 	"endTemperature": 35,
@@ -184,7 +200,7 @@ A `device` is a battery cell charger/discharger etc. that is connecting to a jCh
 #### Payload
 ```javascript
 {
-	"channel": "channel_id",
+	"channel": channel_id,
 	"startVoltage": 4200 | null,
 	"endVoltage": 3000,
 	"endTemperature": 35,
@@ -228,12 +244,14 @@ A `device` is a battery cell charger/discharger etc. that is connecting to a jCh
 #### Payload
 ```javascript
 {
+	"channel": channel_id,
 	"dcResistance": 60 | null,
 	"acResistance": 20 | null,
 }
 ```
 
 #### Notes
+* `channel` channel that completed a discharge session.
 * `dcResistance` and `acResistance` is the internal resistance of the cell in milli Ohms. Set to `null` if not available.
 * A device **may** not implement this.
 
@@ -247,7 +265,7 @@ A `device` is a battery cell charger/discharger etc. that is connecting to a jCh
 
 ```javascript
 {
-	"channel": "id_of_channel",
+	"channel": id_of_channel,
 	"action": "charge" | "discharge" | "dcResistance" | "acResistance",
 	"rate": 1900 | null,
 	"cutoffVoltage": 4200 | null
@@ -270,7 +288,7 @@ A `device` is a battery cell charger/discharger etc. that is connecting to a jCh
 
 ```javascript
 {
-	"channel": "id_of_channel"
+	"channel": id_of_channel
 }
 ```
 
@@ -288,7 +306,7 @@ A `device` is a battery cell charger/discharger etc. that is connecting to a jCh
 
 ```javascript
 {
-	"channel": "id_of_channel"
+	"channel": id_of_channel
 }
 ```
 
@@ -307,7 +325,7 @@ A `device` is a battery cell charger/discharger etc. that is connecting to a jCh
 
 ```javascript
 {
-	"channel": "id_of_channel"
+	"channel": id_of_channel
 }
 ```
 

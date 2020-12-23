@@ -1,14 +1,28 @@
 import * as Hapi from "@hapi/hapi";
 import "reflect-metadata";
 import { createConnection } from "typeorm";
-// import { connect } from "socket.io-client";
+import WebSocket from "ws";
+import Chalk from "chalk";
 import routes from "./routes";
 
 const pjson = require("../package.json");
 
+const WS_PORT = 12345;
+const HTTP_PORT = 3000;
+
 const init = async () => {
+  const wss = new WebSocket.Server({ port: WS_PORT });
+
+  console.log(Chalk.blue(`Websocket server running on port ${WS_PORT}`));
+
+  wss.on("connection", (ws) => {
+    ws.on("message", (message) => {
+      console.log("received: %s", message);
+    });
+  });
+
   const server = new Hapi.Server({
-    port: 3000,
+    port: HTTP_PORT,
     host: "0.0.0.0",
     routes: {
       cors: true,
@@ -38,14 +52,14 @@ const init = async () => {
 
   await server.start();
   // eslint-disable-next-line no-console
-  console.log("Server running on %s", server.info.uri);
+  console.log(Chalk.blue(`HTTP server running on ${server.info.uri}`));
 
   await createConnection();
 };
 
 process.on("unhandledRejection", (err) => {
   // eslint-disable-next-line no-console
-  console.error(err);
+  console.error(Chalk.red(err));
   process.exit(1);
 });
 

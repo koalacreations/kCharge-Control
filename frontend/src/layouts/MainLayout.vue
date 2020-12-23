@@ -3,52 +3,18 @@
     view="lHh Lpr lFf"
     id="main-layout"
   >
-    <q-dialog
-      ref="addCellDialog"
-      v-model="scanning"
-      persistent
-      transition-show="scale"
-      transition-hide="scale"
-    >
-      <q-card
-        style="width: 100%; border-radius: 0; background-color: transparent; border: solid 3px;"
-      >
-        <q-card-section class="bg-white row">
-          <div class="text-black text-h6">
-            Scan a QR code
-          </div>
-
-          <q-space />
-
-          <q-btn
-            color="black"
-            flat
-            icon="mdi-close"
-            @click="stopScan()"
-            v-close-popup
-          />
-        </q-card-section>
-
-        <q-card-section
-          class="q-pt-none"
-          style="height: 250px; background-color: transparent;"
-        />
-      </q-card>
-    </q-dialog>
-
     <q-header elevated>
       <q-toolbar>
-        <template v-if="true">
+        <template v-if="$route.meta.backButton">
           <q-btn
             flat
             dense
             round
-            icon="mdi-menu"
-            aria-label="Menu"
-            @click="leftDrawerOpen = !leftDrawerOpen"
+            icon="mdi-arrow-left"
+            aria-label="Back"
+            @click="$router.go(-1)"
           />
         </template>
-
         <template v-else>
           <q-btn
             flat
@@ -67,6 +33,7 @@
         <q-space />
 
         <q-btn
+          v-if="!scanning && barcodeEnable"
           round
           flat
           icon="mdi-camera"
@@ -74,6 +41,26 @@
         >
           <q-tooltip :delay="500">
             Add or find a cell
+          </q-tooltip>
+        </q-btn>
+
+        <q-btn
+          v-else-if="barcodeEnable"
+          flat
+          icon="mdi-close"
+          @click="stopScan()"
+          v-close-popup
+        />
+
+        <q-btn
+          v-else
+          round
+          flat
+          icon="mdi-camera"
+          disable
+        >
+          <q-tooltip :delay="500">
+            Sorry, barcode scanning isn't supported on this device. Try the mobile app.
           </q-tooltip>
         </q-btn>
       </q-toolbar>
@@ -99,7 +86,17 @@
       </q-list>
     </q-drawer>
 
-    <q-page-container>
+    <div
+      v-if="scanning"
+      class="column items-center justify-center q-pa-xl"
+      style="height: 100vh;"
+    >
+      <cross-hair />
+    </div>
+
+    <q-page-container
+      id="main-container"
+    >
       <router-view />
     </q-page-container>
   </q-layout>
@@ -107,16 +104,16 @@
 
 <script lang="ts" >
 import EssentialLink from "components/EssentialLink.vue";
+import CrossHair from "components/CrossHair.vue";
 import { defineComponent, ref } from "@vue/composition-api";
 import { mapGetters } from "vuex";
-// import { BrowserQRCodeReader } from "@zxing/library";
 import { Plugins } from "@capacitor/core";
 import { AxiosError } from "axios";
-import { BarcodeScanner } from "@dutchconcepts/capacitor-barcode-scanner";
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+import { BarcodeScannerPlugin } from "@dutchconcepts/capacitor-barcode-scanner";
 import { ICell } from "../../../backend/src/models/Cell";
 
 const BS = Plugins.BarcodeScanner;
-// const codeReader = new BrowserQRCodeReader();
 
 const linksData = [
   {
@@ -157,7 +154,7 @@ export default defineComponent({
       }
     };
   },
-  components: { EssentialLink },
+  components: { EssentialLink, CrossHair },
   setup() {
     const leftDrawerOpen = ref(false);
     const essentialLinks = ref(linksData);
@@ -165,13 +162,17 @@ export default defineComponent({
     return { leftDrawerOpen, essentialLinks };
   },
   computed: {
-    ...mapGetters("devices", ["getDevices"])
+    ...mapGetters("devices", ["getDevices"]),
+    barcodeEnable() : boolean {
+      return (this.$q.platform.is.ios as boolean || this.$q.platform.is.android as boolean)
+      || false;
+    }
   },
   methods: {
     stopScan() {
+      const container = document.getElementById("main-container");
       const body = document.getElementById("main-body");
-      const layout = document.getElementById("main-layout");
-      if (layout) layout.classList.remove("hide");
+      if (container) container.classList.remove("hide");
       if (body) body.classList.remove("transparentbg");
       this.scanning = false;
 
@@ -190,20 +191,19 @@ export default defineComponent({
       const status = await BS.checkPermission({ force: true });
 
       if (!status.granted) {
-        // the user granted permission
         return;
       }
-      // const qrCode = await codeReader.decodeOnceFromVideoDevice(undefined, "video");
+
       BS.hideBackground().catch(() => {});
+      const container = document.getElementById("main-container");
       const body = document.getElementById("main-body");
-      const layout = document.getElementById("main-layout");
-      if (layout) layout.classList.add("hide");
       if (body) body.classList.add("transparentbg");
+      if (container) container.classList.add("hide");
 
-      const result = await BS.startScan(); // start scanning and wait for a result
+      const result = await BS.startScan();
 
+      if (container) container.classList.remove("hide");
       if (body) body.classList.remove("transparentbg");
-      if (layout) layout.classList.remove("hide");
 
       try {
         if (result.content) decoded = result.content.split(",");
@@ -214,14 +214,12 @@ export default defineComponent({
             color: "red-4",
             textColor: "white",
             icon: "mdi-alert-circle",
-            message: "Malformed QR Code"
+            message: "Malformed Barcode"
           });
           return;
         }
       } catch (error) {
-        this.capturing = false;
-        this.loading = false;
-        this.errorCamera = true;
+        this.scanning = false;
         this.cellType = "";
         this.cellId = 0;
         return;
@@ -231,18 +229,14 @@ export default defineComponent({
       const cellType = decoded[0];
       const cellId = decoded[1];
 
-      this.loading = true;
       const response = await this.$axios.post("/api/cells/", { type: cellType, id: cellId })
         .catch((error) => {
           const cellResponse = (error as AxiosError).response;
           if (cellResponse?.status === 409) {
             this.retrieved.cellId = this.cellId;
             this.viewCell(cellId);
-          } else {
-            this.error = true;
           }
-        })
-        .finally(() => { this.loading = false; });
+        });
 
       if (response && response.status === 201) {
         this.$q.notify({
@@ -257,10 +251,7 @@ export default defineComponent({
       }
     },
     async restartScan() {
-      this.capturing = true;
-      this.loading = false;
-      this.error = false;
-      this.errorCamera = false;
+      this.scanning = true;
       this.cellType = "";
       this.cellId = 0;
       this.retrieved = {
