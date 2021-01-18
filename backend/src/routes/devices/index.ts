@@ -2,11 +2,18 @@ import Joi from "joi";
 import devices from "./devices";
 import device from "./device";
 
-const cellSchema = Joi.object({
-  id: Joi.number().required(),
-  cellType: Joi.object().required(),
-  state: Joi.string().required(),
-  class: Joi.string().required(),
+const deviceSchema = Joi.object({
+  id: Joi.string().required(),
+  deviceName: Joi.string().allow(null, ""),
+  deviceManufacturer: Joi.string().required(),
+  deviceModel: Joi.string().required(),
+  channels: Joi.number().required(),
+  charge: Joi.boolean().required(),
+  discharge: Joi.boolean().required(),
+  configurableChargeCurrent: Joi.boolean().required(),
+  configurableDischargeCurrent: Joi.boolean().required(),
+  configurableChargeVoltage: Joi.boolean().required(),
+  configurableDischargeVoltage: Joi.boolean().required(),
   created: Joi.date().timestamp("unix").required(),
 });
 
@@ -17,7 +24,7 @@ export default [
     handler: devices.get,
     options: {
       response: {
-        schema: Joi.array().items(cellSchema),
+        schema: Joi.array().items(deviceSchema),
       },
     },
   },

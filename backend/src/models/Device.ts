@@ -48,7 +48,7 @@ export class Device extends BaseEntity {
   configurableDischargeVoltage!: boolean;
 
   @OneToMany(() => DeviceChannel, (deviceChannel) => deviceChannel.device)
-  devices!: DeviceChannel[];
+  deviceChannels!: DeviceChannel[];
 
   @Column({ default: () => Math.floor(new Date().getTime() / 1000) })
   created!: number;
@@ -68,4 +68,11 @@ export interface IDevice {
     configurableChargeVoltage: boolean;
     configurableDischargeVoltage: boolean;
   };
+}
+
+export interface IDeviceConnection {
+  device: IDevice;
+  deviceId: string;
+  // eslint-disable-next-line no-undef
+  socket: WebSocket;
 }

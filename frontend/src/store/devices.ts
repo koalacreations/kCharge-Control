@@ -1,7 +1,10 @@
-import "axios";
+import Vue from "vue";
+import { Commit } from "vuex";
+import { AxiosInstance } from "axios";
+import { IDevice } from "../../../backend/src/models/Device";
 
-export interface devicesState {
-  devices: Array<string>;
+interface IDeviceSTATE {
+  devices: Array<IDevice>;
 }
 
 export default {
@@ -10,11 +13,28 @@ export default {
     devices: []
   },
   getters: {
-    getDevices: (state: devicesState) => state.devices
+    devices: (state: IDeviceSTATE) => state.devices
   },
   mutations: {
-    setAuth(state: devicesState, payload: Array<string>) {
+    setDevices(state: IDeviceSTATE, payload: Array<IDevice>) {
       state.devices = payload;
+    }
+  },
+  actions: {
+    getDevices({ commit }: { commit: Commit }) {
+      return new Promise<void>((resolve, reject) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        (Vue.prototype.$axios as AxiosInstance)
+          .get("/api/devices/")
+          .then(result => {
+            commit("setDevices", result.data);
+            resolve();
+          })
+          .catch(error => {
+            reject();
+            throw error;
+          });
+      });
     }
   }
 };

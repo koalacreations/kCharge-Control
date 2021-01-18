@@ -37,7 +37,7 @@ export class DeviceChannel extends BaseEntity {
   @Column({ type: "text", nullable: true })
   temperature!: number | null;
 
-  @ManyToOne(() => Device, (device) => device.devices, {
+  @ManyToOne(() => Device, (device) => device.deviceChannels, {
     eager: true,
   })
   device!: Device;
@@ -65,20 +65,4 @@ export namespace DeviceChannel {
     overTemperature = "overTemperature",
     error = "error",
   }
-}
-
-export interface IDevice {
-  deviceId: string;
-  deviceName: string | null;
-  deviceManufacturer: string | null;
-  deviceModel: string | null;
-  capabilities: {
-    channels: number;
-    charge: boolean;
-    discharge: boolean;
-    configurableChargeCurrent: boolean;
-    configurableDischargeCurrent: boolean;
-    configurableChargeVoltage: boolean;
-    configurableDischargeVoltage: boolean;
-  };
 }
