@@ -29,5 +29,6 @@ module.exports = {
     "import/extensions": ["warn", "never"],
     "no-empty-function": "off",
     "@typescript-eslint/no-empty-function": "off",
+    "comma-dangle": "off",
   },
 };

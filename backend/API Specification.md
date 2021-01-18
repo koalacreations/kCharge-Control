@@ -160,10 +160,13 @@ Note that for all "error" conditions - the device will not proceed until it is r
 ```javascript
 {
 	"channel": channel_id,
-	"startVoltage": 4200 | null,
+	"startVoltage": 4200,
 	"endVoltage": 3000,
+	"startTemperature": 25,
 	"endTemperature": 35,
 	"capacity": 2500,
+	"dcResistance": 60 | null,
+	"acResistance": 20 | null,
 	"data": [
 		{
 			"time": 1608127015,
@@ -182,8 +185,10 @@ Note that for all "error" conditions - the device will not proceed until it is r
 * `channel` channel that completed a charge session.
 * `startVoltage` voltage of the cell when charging commenced in mV.
 * `endVoltage` voltage of the cell when charging completed in mV.
+* `startTemperature` temperature of the cell when charging started in degrees Celsius.
 * `endTemperature` temperature of the cell when charging completed in degrees Celsius.
 * `capacity` capacity of the cell when charging completed in mAh.
+* `dcResistance` and `acResistance` is the internal resistance of the cell in milli Ohms. Set to `null` if not available.
 * Data objects:
 	* `time` seconds of time that have elapsed since the charge started.
  	* `voltage` voltage of the cell at this time in mV.
@@ -201,8 +206,9 @@ Note that for all "error" conditions - the device will not proceed until it is r
 ```javascript
 {
 	"channel": channel_id,
-	"startVoltage": 4200 | null,
+	"startVoltage": 4200,
 	"endVoltage": 3000,
+	"startTemperature": 25,
 	"endTemperature": 35,
 	"dcResistance": 60 | null,
 	"acResistance": 20 | null,
@@ -226,6 +232,7 @@ Note that for all "error" conditions - the device will not proceed until it is r
 * `startVoltage` voltage of the cell when discharging commenced in mV.
 * `endVoltage` voltage of the cell when discharging completed in mV.
 * `endTemperature` temperature of the cell when discharging completed in degrees Celsius.
+* `startTemperature` temperature of the cell when charging started in degrees Celsius.
 * `dcResistance` and `acResistance` is the internal resistance of the cell in milli Ohms. Set to `null` if not available.
 * `capacity` capacity of the cell when discharging completed in mAh.
 * Data objects (mainly used for generating graphs, **may** be an empty array):

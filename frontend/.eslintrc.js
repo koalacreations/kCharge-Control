@@ -19,14 +19,12 @@ module.exports = {
 
   extends: [
     'plugin:@typescript-eslint/recommended',
-    // consider disabling this class of rules if linting takes too long
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
-    // 'plugin:vue/essential', // Priority A: Essential (Error Prevention)
     'plugin:vue/strongly-recommended', // Priority B: Strongly Recommended (Improving Readability)
-    // 'plugin:vue/recommended', // Priority C: Recommended (Minimizing Arbitrary Choices and Cognitive Overhead)
 
-    'airbnb-base'
+    'airbnb-base',
 
+    'prettier'
   ],
 
   plugins: [
@@ -36,7 +34,6 @@ module.exports = {
     // https://eslint.vuejs.org/user-guide/#why-doesn-t-it-work-on-vue-file
     // required to lint *.vue files
     'vue',
-
   ],
 
   globals: {
@@ -81,12 +78,12 @@ module.exports = {
     radix: ["warn", "as-needed"],
     "no-empty-function": "off",
     "@typescript-eslint/no-empty-function": "off",
-    "comma-dangle": [1, "never"],
+    // "comma-dangle": [1, "never"],
 
     "vue/html-indent": ["error", 2, {
-        "attribute": 1,
-        "closeBracket": 0,
-        "ignores": []
+      "attribute": 1,
+      "closeBracket": 0,
+      "ignores": []
     }]
   }
 }
