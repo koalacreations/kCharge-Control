@@ -53,26 +53,3 @@ export class Device extends BaseEntity {
   @Column({ default: () => Math.floor(new Date().getTime() / 1000) })
   created!: number;
 }
-
-export interface IDevice {
-  id: string;
-  deviceName: string | null;
-  deviceManufacturer: string | null;
-  deviceModel: string | null;
-  capabilities: {
-    channels: number;
-    charge: boolean;
-    discharge: boolean;
-    configurableChargeCurrent: boolean;
-    configurableDischargeCurrent: boolean;
-    configurableChargeVoltage: boolean;
-    configurableDischargeVoltage: boolean;
-  };
-}
-
-export interface IDeviceConnection {
-  device: IDevice;
-  deviceId: string;
-  // eslint-disable-next-line no-undef
-  socket: WebSocket;
-}

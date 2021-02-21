@@ -6,24 +6,24 @@ import Chalk from "chalk";
 import dgram from "dgram";
 import { Netmask } from "netmask";
 import { networkInterfaces } from "os";
+import { Server, Socket } from "socket.io";
 import routes from "./routes";
 import Parser from "./jcharge/parser";
 import Handler from "./jcharge/handler";
-import { IDeviceConnection } from "./models/Device";
+import { WSResponse } from "../../frontend/src/types";
 
+// Our jCharge packet aprser
 const packetParser = new Parser(1);
 const pjson = require("../package.json");
 
+// Our port config
 const WS_PORT = 12345;
 const DISCOVERY_PORT = 54321;
 const HTTP_PORT = 3000;
-const DeviceConnections = [] as Array<IDeviceConnection>;
+const DeviceConnections = {};
+const SocketIOConnections = [] as Array<Socket>;
 
-const init = async () => {
-  const wss = new WebSocket.Server({ port: WS_PORT });
-  const broadcaster = dgram.createSocket({ type: "udp4" });
-  await broadcaster.bind(DISCOVERY_PORT, "0.0.0.0");
-
+function calculateAddresses() {
   const interfaces = networkInterfaces();
   const addresses = {} as any;
 
@@ -41,29 +41,43 @@ const init = async () => {
     }
   }
 
-  console.log(addresses);
+  // calculate the broadcast IP for the jCharge hello packet
   const multicastAddress = "192.168.0.207";
   // const multicastAddress = addresses[Object.keys(addresses)[0]][0].broadcast;
   const serverHost = addresses[Object.keys(addresses)[0]][0].address;
 
+  return { broadcast: multicastAddress, server: serverHost };
+}
+
+// Setup our jCharge websocket server
+const init = async () => {
+  const wss = new WebSocket.Server({ port: WS_PORT });
+  const broadcaster = dgram.createSocket({ type: "udp4" });
+  await broadcaster.bind(DISCOVERY_PORT, "0.0.0.0");
+  const addresses = calculateAddresses();
+
+  // set an interval to broadcast every 5 seconds
   setInterval(() => {
-    console.log(Chalk.green(`Broadcasting hello packet to ${multicastAddress}`));
+    console.log(Chalk.green(`Broadcasting hello packet to ${addresses.broadcast}`));
 
     const data = JSON.stringify({
       version: 1,
       command: "hello",
       payload: {
-        serverHost: `${serverHost}:${WS_PORT}`,
+        serverHost: `${addresses.server}:${WS_PORT}`,
         time: Math.floor(Date.now() / 1000),
         serverName: "jCharge Server"
       }
     });
 
-    broadcaster.send(data, DISCOVERY_PORT, multicastAddress);
-  }, 3000);
+    broadcaster.send(data, DISCOVERY_PORT, addresses.broadcast);
+  }, 5000);
 
+  // log where the websocket server is running
+  // eslint-disable-next-line no-console
   console.log(Chalk.blue(`Websocket server running on port ${WS_PORT}`));
 
+  // whenever we get a new connection, setup a message handler
   wss.on("connection", (ws) => {
     const packetHandler = new Handler(ws);
 
@@ -73,6 +87,7 @@ const init = async () => {
     });
   });
 
+  // create the hapi HTTP server
   const server = new Hapi.Server({
     port: HTTP_PORT,
     host: "0.0.0.0",
@@ -82,6 +97,19 @@ const init = async () => {
     debug: { request: ["error"] },
   });
 
+  // create the socket.io server
+  const sio = new Server(server.listener);
+
+  // setup our socket io server new connection handler
+  sio.on("connection", (socket: Socket) => {
+    console.log(`Connected client at ${socket.id}`);
+    socket.emit("join", {
+      message: "Connected to server.",
+      version: pjson.version,
+    }, (e: WSResponse) => { console.log(e.message); });
+  });
+
+  // add a listener to the "response" event to console log the request method and path for dev
   server.events.on("response", (request) => {
     // eslint-disable-next-line no-console
     console.log(
@@ -91,8 +119,10 @@ const init = async () => {
     );
   });
 
+  // setup our main router
   server.route(routes);
 
+  // setup our root route
   server.route({
     method: "GET",
     path: "/",
@@ -102,10 +132,14 @@ const init = async () => {
     }),
   });
 
+  // start the HTTP server
   await server.start();
+
+  // log where the http server is running
   // eslint-disable-next-line no-console
   console.log(Chalk.blue(`HTTP server running on ${server.info.uri}`));
 
+  // creates the db connection
   await createConnection();
 };
 
@@ -115,4 +149,5 @@ process.on("unhandledRejection", (err) => {
   process.exit(1);
 });
 
+// run the init method
 init();

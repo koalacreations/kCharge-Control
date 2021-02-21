@@ -96,6 +96,7 @@
 
     <q-page-container
       id="main-container"
+      class="q-mx-md"
     >
       <router-view />
     </q-page-container>
@@ -162,7 +163,7 @@ export default defineComponent({
     return { leftDrawerOpen, essentialLinks };
   },
   computed: {
-    ...mapGetters("devices", ["getDevices"]),
+    ...mapGetters("devices", ["devices"]),
     barcodeEnable() : boolean {
       return (this.$q.platform.is.ios as boolean || this.$q.platform.is.android as boolean)
       || false;

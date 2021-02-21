@@ -1,7 +1,7 @@
 import Vue from "vue";
 import { Commit } from "vuex";
 import { AxiosInstance } from "axios";
-import { IDevice } from "../../../backend/src/models/Device";
+import { IDevice } from "../../../backend/src/types/Device";
 
 interface IDeviceSTATE {
   devices: Array<IDevice>;

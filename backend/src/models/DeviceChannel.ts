@@ -10,7 +10,7 @@ import {
   OneToOne,
 } from "typeorm";
 import { Device } from "./Device";
-import { Cell } from "./Cell";
+import { Cell, ICell } from "./Cell";
 
 @Entity()
 @Unique(["id"])
@@ -64,5 +64,16 @@ export namespace DeviceChannel {
     underVoltage = "underVoltage",
     overTemperature = "overTemperature",
     error = "error",
+  }
+
+  export interface IDeviceChannel {
+    id: string;
+    channelId: string;
+    state: DeviceChannel.DeviceChannelState;
+    stage?: string;
+    current: number;
+    voltage: number;
+    temperature: number | null;
+    cell?: ICell;
   }
 }
