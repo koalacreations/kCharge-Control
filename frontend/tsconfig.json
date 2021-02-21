@@ -12,6 +12,12 @@
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
+      "@components/*": [
+        "components/*"
+      ],
+      "@icons": [
+        "icons/"
+      ],
       "*": [
         "node_modules/*"
       ]

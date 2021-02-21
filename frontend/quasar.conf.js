@@ -9,6 +9,7 @@
 /* eslint func-names: 0 */
 /* eslint global-require: 0 */
 /* eslint-disable @typescript-eslint/no-var-requires */
+const path = require("path");
 const { configure } = require("quasar/wrappers");
 
 module.exports = configure((ctx) => ({
@@ -84,6 +85,15 @@ module.exports = configure((ctx) => ({
           exclude: /node_modules/
         });
       }
+
+      cfg.resolve.alias = {
+        ...cfg.resolve.alias,
+        "@components": path.resolve(__dirname, "src/components/"),
+        "@icons": path.resolve(__dirname, "src/icons/"),
+        "@store": path.resolve(__dirname, "src/store/"),
+        "@mixins": path.resolve(__dirname, "src/mixins/"),
+        "@assets": path.resolve(__dirname, "src/assets/"),
+      };
     }
   },
 
@@ -93,10 +103,16 @@ module.exports = configure((ctx) => ({
     port: 8080,
     open: true, // opens browser window automatically
     proxy: {
-      // proxy all requests starting with /api to
+      // proxy all requests starting with /api to the backend
       "/api": {
         target: "http://localhost:3000",
         changeOrigin: false
+      },
+      // proxy all requests starting with /socket.io to the backend
+      "/socket.io": {
+        target: "http://localhost:3000",
+        changeOrigin: false,
+        ws: true
       }
     }
   },
