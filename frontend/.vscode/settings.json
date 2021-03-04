@@ -1,6 +1,11 @@
 {
-    "files.autoSave": "onFocusChange",
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
+    "[js]": {
+        "editor.formatOnSave": false
     },
+    "[ts]": {
+        "editor.formatOnSave": false
+    },
+    "[vue]": {
+        "editor.formatOnSave": false
+    }
 }
