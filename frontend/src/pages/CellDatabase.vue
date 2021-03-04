@@ -6,11 +6,10 @@
       :columns="columns"
       row-key="id"
       :filter="filter"
-      :grid="gridMode"
       :pagination="{
         sortBy: 'desc',
         descending: false,
-        rowsPerPage: this.$q.screen.xs ? 2 : 10,
+        rowsPerPage: this.$q.screen.xs ? 10 : 15,
       }"
       @row-click="onRowClick"
     >
@@ -66,10 +65,7 @@ export default defineComponent({
     };
   },
   mounted() {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.$axios.get("/api/cells/").then((result) => {
-      this.cells = result.data as Array<ICell>;
-    });
+    this.retrieveCells();
   },
   computed: {
     gridMode() {
@@ -77,6 +73,12 @@ export default defineComponent({
     }
   },
   methods: {
+    retrieveCells() {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      this.$axios.get("/api/cells/").then((result) => {
+        this.cells = result.data as Array<ICell>;
+      });
+    },
     onRowClick(evt: InputEvent, row: ICell) {
       this.$router.push({ name: "editCell", params: { cellId: String(row.id) } }).catch(() => {});
     }

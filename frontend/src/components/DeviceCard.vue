@@ -1,7 +1,14 @@
 <template>
   <div class="column justify-center device-container q-pa-md">
     <div class="text-h5 q-mb-md text-center">
-      {{ name || "Unnamed Device" }} <q-btn round outline size="sm" :icon="icons.info" @click="showInfo" />
+      {{ name }}
+      <q-btn
+        round
+        outline
+        size="sm"
+        :icon="icons.info"
+        @click="showInfo"
+      />
     </div>
 
     <div class="row justify-center q-gutter-md">
@@ -9,6 +16,7 @@
         v-for="index in device.channels"
         :key="index"
         :cell="index"
+        :device-id="device.id"
       />
     </div>
   </div>
@@ -29,19 +37,26 @@ export default defineComponent({
     },
   },
   computed: {
-    icons()  {
+    icons() {
       return icons;
     },
+    name(): string {
+      return this.device?.deviceName || "Unnamed Device";
+    }
   },
   methods: {
     showInfo() {
       this.$q.dialog({
-        title: this.device.deviceName || "Unnamed Device",
-        message: `<strong>Device Details:</strong> <br> Manufacturer: ${this.device.deviceManufacturer} <br> Model: ${this.device.deviceModel} <br> Capabilities: ${JSON.stringify(this.device.capabilities)}`,
-        html: true
-      })
-    }
-  }
+        title: this.device?.deviceName || "Unnamed Device",
+        message: `<strong>Name:</strong> <br> Manufacturer: ${
+          this.device?.deviceManufacturer || "Unknown"
+        } <br> Model: ${
+          this.device?.deviceModel || "Unknown"
+        } <br> Capabilities: ${JSON.stringify(this.device?.capabilities)} <br> Serial: ${JSON.stringify(this.device?.id)}`,
+        html: true,
+      });
+    },
+  },
 });
 </script>
 

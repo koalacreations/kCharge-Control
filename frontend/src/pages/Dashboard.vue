@@ -1,18 +1,19 @@
 <template>
   <q-page>
-    <div v-if="!devices.length">
+    <div
+      v-if="!devices.length"
+      class="q-pt-md"
+    >
       No jCharge devices found on the local network.
     </div>
 
     <template v-else>
       <div class="column">
         <div class="text-h4 q-py-md">
-          Found {{ devices.length }} device<template v-if="devices.length > 1">
-            s
-          </template>.
+          {{ title }}
         </div>
 
-        <div class="row">
+        <div class="row q-gutter-md">
           <template
             v-for="device in devices"
           >
@@ -42,6 +43,7 @@ export default defineComponent({
     return {};
   },
   mounted() {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.getDevices();
   },
   methods: {
@@ -49,6 +51,9 @@ export default defineComponent({
   },
   computed: {
     ...mapGetters("devices", ["devices"]),
+    title(): string {
+      return `Found ${this.devices.length} device${this.devices.length >1 ? "s" : ""}.`;
+    }
   },
 });
 </script>

@@ -85,6 +85,7 @@
           round
           color="primary"
           icon="mdi-battery-high"
+          size="large"
           @click="setStateAndSubmit('Charged')"
         >
           <q-tooltip :delay="500">
@@ -95,6 +96,7 @@
           round
           color="primary"
           icon="mdi-battery-low"
+          size="large"
           @click="setStateAndSubmit('Discharged')"
         >
           <q-tooltip :delay="500">
@@ -105,6 +107,7 @@
           round
           color="primary"
           icon="mdi-new-box"
+          size="large"
           @click="setStateAndSubmit('New')"
         >
           <q-tooltip :delay="500">
@@ -130,6 +133,7 @@
 import { defineComponent } from "@vue/composition-api";
 import { QSelect } from "quasar";
 import { ICell } from "../../../backend/src/models/Cell";
+import { EventBus } from "../event-bus";
 
 export default defineComponent({
   name: "EditCell",
@@ -218,13 +222,17 @@ export default defineComponent({
       }
     },
     onSubmit() {
-      this.$axios.put(`/api/cells/${this.cellId}/`, this.cell).then(() => {
+      setTimeout(() => {
+        this.$axios.put(`/api/cells/${this.cellId}/`, this.cell).then(() => {
         this.$q.notify({
           color: "green-4",
           textColor: "white",
           icon: "mdi-check",
-          message: "Saved"
+          message: "Saved",
+          timeout: 1000
         });
+        EventBus.$emit("cell-updated",);
+        console.log("UPDATED CELL 1");
       }).catch(() => {
         this.$q.notify({
           color: "red-4",
@@ -233,6 +241,7 @@ export default defineComponent({
           message: "Error"
         });
       });
+      }, 10);
     },
     setStateAndSubmit(state: string) {
       const foundState = this.options.find((option) => option.label === state);

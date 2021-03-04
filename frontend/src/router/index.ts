@@ -25,7 +25,8 @@ export default route<Store<StateInterface>>(({ Vue }) => {
   });
 
   Router.afterEach((to) => {
-    document.title = (to.meta as RouteMeta).title;
+    const {title} = to.meta as RouteMeta;
+    document.title = title ? `${title  } - jCharge` : "jCharge";
   });
 
   return Router;
