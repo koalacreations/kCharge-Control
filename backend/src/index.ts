@@ -42,8 +42,8 @@ function calculateAddresses() {
   }
 
   // calculate the broadcast IP for the jCharge hello packet
-  const multicastAddress = "192.168.0.207";
-  // const multicastAddress = addresses[Object.keys(addresses)[0]][0].broadcast;
+  // const multicastAddress = "192.168.0.207";
+  const multicastAddress = addresses[Object.keys(addresses)[0]][0].broadcast;
   const serverHost = addresses[Object.keys(addresses)[0]][0].address;
 
   return { broadcast: multicastAddress, server: serverHost };
@@ -54,6 +54,7 @@ const init = async () => {
   const wss = new WebSocket.Server({ port: WS_PORT });
   const broadcaster = dgram.createSocket({ type: "udp4" });
   await broadcaster.bind(DISCOVERY_PORT, "0.0.0.0");
+  await broadcaster.setBroadcast(true);
   const addresses = calculateAddresses();
 
   // set an interval to broadcast every 5 seconds

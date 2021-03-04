@@ -11,7 +11,7 @@ const get = async (request: Request) => {
 };
 
 const put = async (request: Request) => {
-  const cell = await Cell.findOne(request.params.id);
+  const cell = await Cell.findOne(request.params.id.replace(/^0+(?=\d)/, ""));
 
   if (!cell) throw Boom.notFound();
 
@@ -19,7 +19,6 @@ const put = async (request: Request) => {
 
   cell.class = cellPayload.class;
   cell.state = (<any>Cell.CellState)[cellPayload.state];
-  console.log(cell);
   cell.save();
 
   return cell;
