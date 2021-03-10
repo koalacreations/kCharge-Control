@@ -9,3 +9,9 @@ export default defineComponent({
   name: "CrossHair"
 });
 </script>
+
+<style lang="scss">
+img {
+  max-height: 100%;
+}
+</style>

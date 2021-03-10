@@ -8,6 +8,9 @@
     "@capacitor/cli": "^2.0.0",
     "@capacitor/core": "^2.0.0",
     "@capacitor/ios": "^2.4.5",
-    "@dutchconcepts/capacitor-barcode-scanner": "^1.1.1"
+    "@dutchconcepts/capacitor-barcode-scanner": "^1.1.1",
+    "@ionic-native/core": "^5.31.1",
+    "@ionic-native/zeroconf": "^5.31.1",
+    "cordova-plugin-zeroconf": "^1.4.2"
   }
 }

@@ -7,6 +7,7 @@ import dgram from "dgram";
 import { Netmask } from "netmask";
 import { networkInterfaces } from "os";
 import { Server, Socket } from "socket.io";
+import Mdns from "mdns";
 import routes from "./routes";
 import Parser from "./jcharge/parser";
 import Handler from "./jcharge/handler";
@@ -57,6 +58,14 @@ const init = async () => {
   await broadcaster.setBroadcast(true);
   const addresses = calculateAddresses();
 
+  // Start advertising our ws and http services
+  const mdnsHTTP = Mdns.createAdvertisement(Mdns.tcp("jcharge-http"), HTTP_PORT);
+  const mdnsSIO = Mdns.createAdvertisement(Mdns.tcp("jcharge-sio"), HTTP_PORT);
+  const mdnsWSS = Mdns.createAdvertisement(Mdns.tcp("jcharge-wss"), WS_PORT);
+  mdnsHTTP.start();
+  mdnsSIO.start();
+  mdnsWSS.start();
+
   // set an interval to broadcast every 5 seconds
   setInterval(() => {
     console.log(Chalk.green(`Broadcasting hello packet to ${addresses.broadcast}`));
@@ -65,7 +74,8 @@ const init = async () => {
       version: 1,
       command: "hello",
       payload: {
-        serverHost: `${addresses.server}:${WS_PORT}`,
+        websocketHost: `${addresses.server}:${WS_PORT}`,
+        apiHost: `${addresses.server}:${HTTP_PORT}`,
         time: Math.floor(Date.now() / 1000),
         serverName: "jCharge Server"
       }
@@ -99,7 +109,12 @@ const init = async () => {
   });
 
   // create the socket.io server
-  const sio = new Server(server.listener);
+  const sio = new Server(server.listener, {
+    cors: {
+      origin: "*",
+      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    }
+  });
 
   // setup our socket io server new connection handler
   sio.on("connection", (socket: Socket) => {

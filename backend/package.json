@@ -18,6 +18,7 @@
     "@types/netmask": "^1.0.30",
     "chalk": "^4.1.0",
     "joi": "^17.3.0",
+    "mdns": "^2.7.2",
     "netmask": "^1.0.6",
     "prettier": "^2.2.1",
     "reflect-metadata": "^0.1.13",
@@ -29,6 +30,7 @@
     "ws": "^7.4.1"
   },
   "devDependencies": {
+    "@types/mdns": "0.0.33",
     "@types/node": "^14.14.6",
     "@types/socket.io": "^2.1.11",
     "@types/socket.io-client": "^1.4.34",

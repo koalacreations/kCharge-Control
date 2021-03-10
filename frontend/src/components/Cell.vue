@@ -4,7 +4,7 @@
     @click="cellClicked"
   >
     <div
-      class="cell column items-center q-py-md q-px-sm"
+      class="cell column items-center q-py-md q-px-xs"
     >
       <div class="title">
         {{ cell }}
@@ -83,6 +83,7 @@ export default defineComponent({
 
 .title {
   text-align: center;
+  font-size: 1em;
 }
 
 .status-led {

@@ -11,7 +11,7 @@
       />
     </div>
 
-    <div class="row justify-center q-gutter-md">
+    <div class="row justify-center q-gutter-sm">
       <cell
         v-for="index in device.channels"
         :key="index"

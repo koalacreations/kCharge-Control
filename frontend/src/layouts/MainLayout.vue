@@ -81,8 +81,9 @@
       v-model="leftDrawerOpen"
       show-if-above
       bordered
+      id="main-drawer"
     >
-      <q-list>
+      <q-list id="main-drawer-list">
         <q-item-label
           header
           class="text-grey-8"
@@ -99,7 +100,7 @@
 
     <div
       v-if="scanning"
-      class="column items-center justify-center q-pa-xl q-mt-md"
+      class="column items-center justify-center q-pa-xl"
       style="height: 100vh;"
     >
       <cross-hair />
@@ -140,6 +141,12 @@ const linksData = [
     caption: "Your cell database",
     icon: "mdi-battery",
     to: { name: "cellDatabase" },
+  },
+  {
+    title: "Settings",
+    caption: "Configure jCharge settings",
+    icon: "mdi-cog",
+    to: { name: "settings" },
   },
 
   {
@@ -338,3 +345,16 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss">
+#main-layout {
+ padding-left: env(safe-area-inset-left);
+ padding-right: env(safe-area-inset-right);
+ padding-bottom: env(safe-area-inset-bottom);
+}
+
+#main-drawer-list {
+ padding-left: env(safe-area-inset-left);
+ padding-bottom: env(safe-area-inset-bottom);
+}
+</style>

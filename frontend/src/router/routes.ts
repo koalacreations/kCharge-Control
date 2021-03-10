@@ -10,7 +10,13 @@ const routes: RouteConfig[] = [
         path: "",
         component: () => import("pages/Dashboard.vue"),
         meta: { title: "Dashboard" }
-      }
+      },
+      {
+        path: "/settings/",
+        name: "settings",
+        component: () => import("pages/Settings.vue"),
+        meta: { title: "Settings" }
+      },
     ]
   },
   {

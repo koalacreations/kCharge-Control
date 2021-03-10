@@ -44,16 +44,22 @@ export default defineComponent({
   },
   mounted() {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.getDevices();
+    if (this.httpBaseUrl) this.getDevices(); // if we have a baseUrl then fetch devices
   },
   methods: {
     ...mapActions("devices", ["getDevices"]),
   },
   computed: {
     ...mapGetters("devices", ["devices"]),
+    ...mapGetters("config", ["httpBaseUrl"]),
     title(): string {
       return `Found ${this.devices.length} device${this.devices.length >1 ? "s" : ""}.`;
     }
   },
+  watch: {
+    httpBaseUrl() {
+      this.getDevices();
+    }
+  }
 });
 </script>

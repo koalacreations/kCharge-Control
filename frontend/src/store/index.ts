@@ -1,6 +1,7 @@
 import { store } from "quasar/wrappers";
 import Vuex from "vuex";
 import devices from "./devices";
+import config from "./config";
 
 /*
  * If not building with SSR mode, you can
@@ -19,7 +20,8 @@ export default store(({ Vue }) => {
 
   const Store = new Vuex.Store<StateInterface>({
     modules: {
-      devices
+      devices,
+      config
     },
 
     strict: !!process.env.DEBUGGING
