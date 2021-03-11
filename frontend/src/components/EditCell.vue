@@ -132,6 +132,7 @@
 <script lang="ts" >
 import { defineComponent } from "@vue/composition-api";
 import { QSelect } from "quasar";
+import { mapGetters } from "vuex";
 import { ICell } from "../../../backend/src/models/Cell";
 import { EventBus } from "../event-bus";
 
@@ -197,29 +198,36 @@ export default defineComponent({
     },
     cellId() {
       this.retrieveCell().catch(null);
+    },
+    httpBaseUrl() {
+      this.retrieveCell().catch(null);
     }
   },
   computed: {
+    ...mapGetters("config", ["httpBaseUrl"]),
     darkMode(): boolean {
       return this.$q.dark.isActive;
     }
   },
   methods: {
     async retrieveCell() {
-      const retrieved = await this.$axios.get(`/api/cells/${this.cellId}/`);
-      const data = retrieved.data as ICell;
-      this.cell = data;
+      await this.$axios.get(`/api/cells/${this.cellId}/`)
+      .then((retrieved) => {
+        const data = retrieved.data as ICell;
+        this.cell = data;
 
-      const state = this.options.find((option) => option.value === data.state);
-      if (state) this.cellState = state;
-      else {
-        this.cellState = {
-          label: "Unknown",
-          value: "unknown",
-          description: "Unknown state from database",
-          icon: "mdi-help"
-        };
-      }
+        const state = this.options.find((option) => option.value === data.state);
+        if (state) this.cellState = state;
+        else {
+          this.cellState = {
+            label: "Unknown",
+            value: "unknown",
+            description: "Unknown state from database",
+            icon: "mdi-help"
+          };
+        }
+      })
+      .catch(() => {});
     },
     onSubmit() {
       setTimeout(() => {
@@ -232,7 +240,6 @@ export default defineComponent({
           timeout: 1000
         });
         EventBus.$emit("cell-updated",);
-        console.log("UPDATED CELL 1");
       }).catch(() => {
         this.$q.notify({
           color: "red-4",

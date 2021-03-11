@@ -27,13 +27,13 @@ const routes: RouteConfig[] = [
         name: "cellDatabase",
         path: "",
         component: () => import("pages/CellDatabase.vue"),
-        meta: { title: "Cell Database" }
+        meta: { title: "Cells" }
       },
       {
         name: "cellDatabaseDefault",
         path: "*",
         component: () => import("pages/CellDatabase.vue"),
-        meta: { title: "Cell Database" }
+        meta: { title: "Cells" }
       }
     ]
   },
@@ -45,7 +45,7 @@ const routes: RouteConfig[] = [
         name: "editCell",
         path: ":cellId",
         component: () => import("pages/EditCellPage.vue"),
-        meta: { title: "Edit Cell", backButton: true }
+        meta: { title: "Edit Cell", backButton: true, backRoute: "cellDatabase" }
       }
     ]
   },

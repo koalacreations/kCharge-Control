@@ -3,13 +3,14 @@
     <div
       class="q-pt-md"
     >
-      <h5>
-        Settings
-      </h5>
-
       <div>
-        <b>HTTP Url: </b>{{ httpBaseUrl }}
+        <p>This page lets you check the currently configured settings of this application. Please be aware that jCharge automatically looks for compatible servers on your network. Your network must support mDNS services for this to work.</p>
 
+        <p>
+          <b>HTTP API Url: </b>{{ httpBaseUrl }} <br>
+          <b>SIO API Url: </b>{{ httpBaseUrl }} <br>
+          <b>API Version: </b>{{ apiVersion }} <br>
+        </p>
       </div>
     </div>
   </q-page>
@@ -32,7 +33,7 @@ export default defineComponent({
   methods: {
   },
   computed: {
-    ...mapGetters("config", ["httpBaseUrl"]),
+    ...mapGetters("config", ["httpBaseUrl", "apiVersion"]),
   },
 });
 </script>

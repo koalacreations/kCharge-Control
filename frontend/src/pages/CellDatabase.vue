@@ -67,6 +67,12 @@ export default defineComponent({
   mounted() {
     this.retrieveCells();
   },
+
+  watch: {
+    httpBaseUrl() {
+      this.retrieveCells();
+    }
+  },
   computed: {
     gridMode() {
       return this.$q.screen.lt.sm;

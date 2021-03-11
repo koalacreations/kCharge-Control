@@ -12,7 +12,7 @@
             round
             icon="mdi-arrow-left"
             aria-label="Back"
-            @click="$router.go(-1)"
+            @click="goBack()"
           />
         </template>
         <template v-else>
@@ -26,7 +26,9 @@
           />
         </template>
 
-        <q-toolbar-title> jCharge </q-toolbar-title>
+        <div class="text-h5">
+          {{ title }}
+        </div>
 
         <q-space />
 
@@ -36,8 +38,9 @@
           round
           flat
           v-model="continuousMode"
+          :disable="!sioConnected"
         >
-          <q-tooltip>
+          <q-tooltip :delay="200">
             Enable continous scanning mode (ie for bulk processing cells).
           </q-tooltip>
         </q-toggle>
@@ -48,8 +51,9 @@
           flat
           icon="mdi-camera"
           @click="startScan()"
+          :disable="!sioConnected"
         >
-          <q-tooltip :delay="500">
+          <q-tooltip :delay="200">
             Add or find a cell
           </q-tooltip>
         </q-btn>
@@ -109,8 +113,23 @@
     <q-page-container
       id="main-container"
       class="q-mx-md"
+      v-if="sioConnected"
     >
       <router-view />
+    </q-page-container>
+
+    <q-page-container
+      class="q-pa-md text-center"
+      v-else
+    >
+      <q-spinner-rings
+        color="primary"
+        size="10em"
+      />
+      <p class="q-pt-md">
+        Searching for a jCharge server
+        <span class="one">.</span><span class="two">.</span><span class="three">.</span>
+      </p>
     </q-page-container>
   </q-layout>
 </template>
@@ -170,6 +189,7 @@ export default defineComponent({
       cellType: "",
       cellId: 0,
       retrieved: {} as ICell,
+      title: "jCharge",
     };
   },
   components: { EssentialLink, CrossHair },
@@ -181,6 +201,7 @@ export default defineComponent({
   },
   computed: {
     ...mapGetters("devices", ["devices"]),
+    ...mapGetters("config", ["sioConnected"]),
     barcodeEnable(): boolean {
       return (
         (this.$q.platform.is.ios as boolean) ||
@@ -201,9 +222,14 @@ export default defineComponent({
         this.startScan();
       }
     });
+
     EventBus.$on("scan-start", (slotId: {slotId: string}) => {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.startScan(true, slotId.slotId);
+    });
+
+    EventBus.$on("title-update", (title: string) => {
+        this.title = title;
     });
   },
   beforeRouteLeave(to, from, next) {
@@ -211,6 +237,15 @@ export default defineComponent({
     next();
   },
   methods: {
+    async goBack() {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (this.$route.meta.backRoute) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
+        await this.$router.push({name: this.$route.meta.backRoute});
+      } else {
+        this.$router.go(-1);
+      }
+    },
     stopScan() {
       const container = document.getElementById("main-container");
       const body = document.getElementById("main-body");
@@ -288,7 +323,6 @@ export default defineComponent({
       if (external) {
         // if we're an external scan then we want to stop scanning and emit the scan result to the event bus
         this.stopScan();
-        console.log(`Emitting to: scan-result-${slotId}`);
         EventBus.$emit(`scan-result-${slotId}`, {cellId, cellType});
 
       } else {
@@ -350,11 +384,58 @@ export default defineComponent({
 #main-layout {
  padding-left: env(safe-area-inset-left);
  padding-right: env(safe-area-inset-right);
- padding-bottom: env(safe-area-inset-bottom);
 }
 
 #main-drawer-list {
  padding-left: env(safe-area-inset-left);
  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.one {
+  opacity: 0;
+  -webkit-animation: dot 1.3s infinite;
+  -webkit-animation-delay: 0s;
+  animation: dot 1.3s infinite;
+  animation-delay: 0s;
+}
+
+.two {
+  opacity: 0;
+  -webkit-animation: dot 1.3s infinite;
+  -webkit-animation-delay: 0.2s;
+  animation: dot 1.3s infinite;
+  animation-delay: 0.2s;
+}
+
+.three {
+  opacity: 0;
+  -webkit-animation: dot 1.3s infinite;
+  -webkit-animation-delay: 0.3s;
+  animation: dot 1.3s infinite;
+  animation-delay: 0.3s;
+}
+
+@-webkit-keyframes dot {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes dot {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 </style>

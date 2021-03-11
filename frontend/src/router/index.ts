@@ -4,6 +4,7 @@ import { Store } from "vuex";
 import { StateInterface } from "../store";
 import routes from "./routes";
 import { RouteMeta } from "../types";
+import { EventBus } from "../event-bus";
 
 /*
  * If not building with SSR mode, you can
@@ -26,7 +27,8 @@ export default route<Store<StateInterface>>(({ Vue }) => {
 
   Router.afterEach((to) => {
     const {title} = to.meta as RouteMeta;
-    document.title = title ? `${title  } - jCharge` : "jCharge";
+    document.title = title ? `${title} - jCharge` : "jCharge";
+    EventBus.$emit("title-update", title || "jCharge");
   });
 
   return Router;

@@ -12,13 +12,13 @@ import { io } from "socket.io-client";
 import { defineComponent } from "@vue/composition-api";
 import { Plugins } from "@capacitor/core";
 import { Zeroconf } from "@ionic-native/zeroconf";
-import { WSJoin } from "./types";
 import { mapMutations, mapGetters } from "vuex";
+import { WSJoin } from "./types";
 
 export default defineComponent({
   name: "App",
   methods: {
-    ...mapMutations("config", ["setHttpBaseUrl"])
+    ...mapMutations("config", ["setHttpBaseUrl", "setApiVersion", "setSioConnected"])
   },
   computed: {
     ...mapGetters("config", ["httpBaseUrl"])
@@ -51,10 +51,16 @@ export default defineComponent({
 
         s.on("connect", () => {
           // console.log(`New socket.io connection with ID ${s.id}`);
+          this.setSioConnected(true);
+        });
+
+        s.on("disconnect", () => {
+          this.setSioConnected(false);
         });
 
         s.on("join", (payload: WSJoin) => {
-          console.log(`SocketIO API version ${payload.version} connected.`);
+          console.log(`SIO API version ${payload.version} connected.`);
+          this.setApiVersion(payload.version);
         });
 
         s.on("devices", (payload: string) => {

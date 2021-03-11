@@ -7,3 +7,7 @@
 .hide {
   display: none;
 }
+
+.q-page {
+  padding-bottom: env(safe-area-inset-bottom);
+}
