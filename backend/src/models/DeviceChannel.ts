@@ -4,10 +4,11 @@ import {
   BaseEntity,
   Entity,
   Column,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
   Unique,
   ManyToOne,
   OneToOne,
+  JoinColumn
 } from "typeorm";
 import { Device } from "./Device";
 import { Cell, ICell } from "./Cell";
@@ -16,8 +17,8 @@ import { Cell, ICell } from "./Cell";
 @Unique(["id"])
 // eslint-disable-next-line import/export
 export class DeviceChannel extends BaseEntity {
-  @PrimaryColumn()
-  id!: string;
+  @PrimaryGeneratedColumn("increment")
+  id!: number;
 
   @Column()
   channelId!: number;
@@ -44,7 +45,9 @@ export class DeviceChannel extends BaseEntity {
 
   @OneToOne(() => Cell, {
     eager: true,
+    nullable: true,
   })
+  @JoinColumn()
   cell!: Cell;
 
   @Column({ default: () => Math.floor(new Date().getTime() / 1000) })
@@ -67,7 +70,7 @@ export namespace DeviceChannel {
   }
 
   export interface IDeviceChannel {
-    id: string;
+    id: number;
     channelId: string;
     state: DeviceChannel.DeviceChannelState;
     stage?: string;
