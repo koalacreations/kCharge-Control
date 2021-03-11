@@ -1,6 +1,23 @@
 <template>
   <q-page class="row items-start justify-evenly q-pt-md">
+    <div
+      v-if="!cells.length"
+      class="q-pt-md text-center"
+    >
+      <q-icon
+        :name="icons.noCells"
+        style="opacity: 20%;"
+        class="q-py-md"
+        size="10em"
+      />
+
+      <p>
+        No cells were found in your database. Scan a new cell to get started.
+      </p>
+    </div>
+
     <q-table
+      v-else
       title="Cells"
       :data="cells"
       :columns="columns"
@@ -34,6 +51,7 @@
 import { defineComponent } from "@vue/composition-api";
 import { date } from "quasar";
 import { ICell, ICellType } from "../../../backend/src/models/Cell";
+import icons from "../icons";
 
 export default defineComponent({
   name: "CellDatabase",
@@ -74,6 +92,9 @@ export default defineComponent({
     }
   },
   computed: {
+    icons() {
+      return icons;
+    },
     gridMode() {
       return this.$q.screen.lt.sm;
     }

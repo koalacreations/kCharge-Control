@@ -4,12 +4,16 @@
       class="q-pt-md"
     >
       <div>
-        <p>This page lets you check the currently configured settings of this application. Please be aware that jCharge automatically looks for compatible servers on your network. Your network must support mDNS services for this to work.</p>
+        <p>This page lets you check the currently configured settings of this application.</p>
 
         <p>
           <b>HTTP API Url: </b>{{ httpBaseUrl }} <br>
           <b>SIO API Url: </b>{{ httpBaseUrl }} <br>
           <b>API Version: </b>{{ apiVersion }} <br>
+        </p>
+
+        <p>
+          Please be aware that jCharge Control automatically looks for compatible servers on your network. Your network must support mDNS services for this to work.
         </p>
       </div>
     </div>

@@ -1,4 +1,5 @@
 export default {
   info: "mdi-information-variant",
-  noDevices: "mdi-battery-off"
+  noDevices: "mdi-server-network-off",
+  noCells: "mdi-battery-off"
 };
