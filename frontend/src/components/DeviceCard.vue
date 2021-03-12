@@ -41,18 +41,21 @@ export default defineComponent({
       return icons;
     },
     name(): string {
-      return this.device?.deviceName || "Unnamed Device";
+      if (this.device?.deviceManufacturer) {
+        return this.device?.deviceName || `Unnamed ${this.device?.deviceManufacturer} ${this.device?.deviceModel || "Device"}`;
+      }
+      return this.device?.deviceName || `Unnamed ${this.device?.deviceModel || "Device"}`;
     }
   },
   methods: {
     showInfo() {
       this.$q.dialog({
-        title: this.device?.deviceName || "Unnamed Device",
-        message: `<strong>Name:</strong> <br> Manufacturer: ${
+        title: this.name,
+        message: `Name: ${this.name}<br> Manufacturer: ${
           this.device?.deviceManufacturer || "Unknown"
         } <br> Model: ${
           this.device?.deviceModel || "Unknown"
-        } <br> Capabilities: ${JSON.stringify(this.device?.capabilities)} <br> Serial: ${JSON.stringify(this.device?.id)}`,
+        } <br> Capabilities: ${JSON.stringify(this.device?.capabilities)} <br> Device ID: ${this.device?.id || "Unspecified ID"}`,
         html: true,
       });
     },

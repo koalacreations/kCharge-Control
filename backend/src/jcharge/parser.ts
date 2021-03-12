@@ -19,9 +19,6 @@ export class Parser {
     }
 
     const command = (<any>Parser.PacketType)[packet.command];
-    if (command === undefined) {
-      console.log(Chalk.red(`Invalid command received: '${packet.command}'`));
-    }
 
     return packet;
   }

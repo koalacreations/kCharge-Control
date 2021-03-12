@@ -1,6 +1,7 @@
 export interface IPacket {
   version: number;
   command: string;
+  deviceId: string;
   payload: object;
 }
 

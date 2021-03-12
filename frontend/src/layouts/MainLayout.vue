@@ -10,7 +10,7 @@
             flat
             dense
             round
-            icon="mdi-arrow-left"
+            :icon="icons.back"
             aria-label="Back"
             @click="goBack()"
           />
@@ -20,7 +20,7 @@
             flat
             dense
             round
-            icon="mdi-menu"
+            :icon="icons.menu"
             aria-label="Menu"
             @click="leftDrawerOpen = !leftDrawerOpen"
           />
@@ -49,7 +49,7 @@
           v-if="!scanning && barcodeEnable"
           round
           flat
-          icon="mdi-camera"
+          :icon="icons.scanQr"
           @click="startScan()"
           :disable="!sioConnected"
         >
@@ -110,27 +110,37 @@
       <cross-hair />
     </div>
 
-    <q-page-container
-      id="main-container"
-      class="q-mx-md"
+    <transition-group
+      enter-active-class="animated fadeIn"
       v-if="sioConnected"
     >
-      <router-view />
-    </q-page-container>
-
-    <q-page-container
-      class="q-pa-md text-center"
+      <q-page-container
+        id="main-container"
+        key="main-container"
+        class="q-mx-md"
+      >
+        <router-view />
+      </q-page-container>
+    </transition-group>
+    <transition-group
+      enter-active-class="animated fadeIn"
       v-else
     >
-      <q-spinner-rings
-        color="primary"
-        size="10em"
-      />
-      <p class="q-pt-md">
-        Searching for a jCharge server
-        <span class="one">.</span><span class="two">.</span><span class="three">.</span>
-      </p>
-    </q-page-container>
+      <q-page-container
+        class="q-pa-md text-center"
+        key="searching-container"
+      >
+        <q-spinner-rings
+          color="primary"
+          size="10em"
+          class="q-my-md"
+        />
+        <p class="q-pt-md">
+          Searching for a jCharge server
+          <span class="one">.</span><span class="two">.</span><span class="three">.</span>
+        </p>
+      </q-page-container>
+    </transition-group>
   </q-layout>
 </template>
 
@@ -145,6 +155,7 @@ import { AxiosError } from "axios";
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 import { ICell } from "../../../backend/src/models/Cell";
 import { EventBus } from "../event-bus";
+import icons from "../icons";
 
 const BS = Plugins.BarcodeScanner;
 
@@ -202,6 +213,9 @@ export default defineComponent({
   computed: {
     ...mapGetters("devices", ["devices"]),
     ...mapGetters("config", ["sioConnected"]),
+    icons() {
+      return icons;
+    },
     barcodeEnable(): boolean {
       return (
         (this.$q.platform.is.ios as boolean) ||

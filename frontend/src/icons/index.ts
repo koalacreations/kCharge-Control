@@ -1,5 +1,8 @@
 export default {
   info: "mdi-information-variant",
   noDevices: "mdi-server-network-off",
-  noCells: "mdi-battery-off"
+  noCells: "mdi-battery-off",
+  scanQr: "mdi-qrcode-scan",
+  back: "mdi-arrow-left",
+  menu: "mdi-menu"
 };

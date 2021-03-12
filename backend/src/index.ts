@@ -118,11 +118,18 @@ const init = async () => {
 
   // setup our socket io server new connection handler
   sio.on("connection", (socket: Socket) => {
-    console.log(`Connected client at ${socket.id}`);
+    const refreshInterval = setInterval(() => {
+
+    }, 1000);
+
     socket.emit("join", {
       message: "Connected to server.",
       version: pjson.version,
     }, (e: WSResponse) => { console.log(e.message); });
+
+    socket.on("disconnect", () => {
+      clearInterval(refreshInterval);
+    });
   });
 
   // add a listener to the "response" event to console log the request method and path for dev

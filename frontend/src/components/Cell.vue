@@ -4,22 +4,39 @@
     @click="cellClicked"
   >
     <div
-      class="cell column items-center q-py-md q-px-xs"
+      class="cell column items-center q-py-sm q-px-xs"
     >
+      <div class="row q-pb-sm">
+        <q-btn
+          class="col q-mr-xs"
+          round
+          color="primary"
+          size="0.85em"
+          :icon="icons.scanQr"
+        />
+        <q-btn
+          class="col"
+          round
+          color="primary"
+          size="0.85em"
+          :icon="icons.info"
+        />
+      </div>
+
+      <div class="status">
+        <div>{{ status }}</div>
+        <div>{{ voltage }} V</div>
+        <div>{{ capacity }} mAh</div>
+      </div>
+
       <div class="title">
         {{ cell }}
-        <div>{{ status }}</div>
       </div>
 
       <div
         class="status-led q-my-sm"
         :class="activeClass"
       />
-
-      <div class="status">
-        <div>{{ voltage }} V</div>
-        <div>{{ capacity }} mAh</div>
-      </div>
     </div>
   </div>
 </template>
@@ -27,6 +44,7 @@
 <script lang="ts" >
 import { defineComponent } from "@vue/composition-api";
 import { EventBus } from "../event-bus";
+import icons from "../icons";
 
 export default defineComponent({
   name: "Cell",
@@ -36,23 +54,28 @@ export default defineComponent({
       type: String
     },
     cell: {
-      required: true,
+      required: false,
       type: Number
     },
     voltage: {
-      default: "?",
+      default: "4.1",
     },
     capacity: {
-      default: "?",
+      default: "2200",
     },
   },
   data() {
     return {
       activeClass: "",
-      status: "Unknown",
+      status: "charging",
       interval: 0 as unknown as ReturnType<typeof setInterval>,
       scanHandler: 0 as unknown as ReturnType<typeof EventBus.$on>,
     };
+  },
+  computed: {
+    icons() {
+      return icons;
+    }
   },
   beforeDestroy() {
     clearInterval(this.interval);
@@ -64,13 +87,13 @@ export default defineComponent({
       else this.activeClass = "";
     }, 1000);
 
-    this.scanHandler = EventBus.$on(`scan-result-${this.deviceId}-${this.cell}`, (result: {cellId: string, cellType: string}) => {
-        console.log("Scan result! ", result);
-    });
+    // this.scanHandler = EventBus.$on(`scan-result-${this.deviceId}-${this.cell}`, (result: {cellId: string, cellType: string}) => {
+    //     console.log("Scan result! ", result);
+    // });
   },
   methods: {
     cellClicked() {
-      EventBus.$emit("scan-start", {slotId: `${this.deviceId}-${this.cell}`});
+      EventBus.$emit("scan-start", {slotId: `${this.deviceId}-${this.cell || ""}`});
     }
   }
 });
@@ -83,7 +106,7 @@ export default defineComponent({
 
 .title {
   text-align: center;
-  font-size: 1em;
+  font-size: 1.2em;
 }
 
 .status-led {

@@ -4,9 +4,10 @@
 
 import Chalk from "chalk";
 import WebSocket from "ws";
-import { IPacket, IPayloadHelloServer } from "../types";
+import { IPacket, IPayloadDeviceStatus, IPayloadHelloServer } from "../types";
 import { Parser } from "../parser";
 import HelloServer from "./commands/HelloServer";
+import DeviceStatus from "./commands/DeviceStatus";
 
 export class Handler {
   ws: WebSocket;
@@ -25,9 +26,7 @@ export class Handler {
         break;
 
       case Parser.PacketType.DeviceStatus:
-        console.log(
-          Chalk.yellow(`'${packet.command}' is not implemented on this server.`)
-        );
+        DeviceStatus(packet.payload as IPayloadDeviceStatus, packet.deviceId);
         break;
 
       case Parser.PacketType.ChargeComplete:
