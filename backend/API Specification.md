@@ -32,7 +32,7 @@ A jCharge Control packet is defined as a single JSON object that follows the for
 ```
 
 ## Auto Discovery
-The jCharge Control protocol defines an auto discovery mechanism to help testing devices discover a jCharge Control server on the local network. A testing device **should** implement auto discovery, but if it chooses not to, this section **may** be ignored.
+The jCharge Control protocol defines an auto discovery mechanism to help testing devices discover a jCharge Control server on the local network. A testing device **should** implement auto discovery, but if it chooses not to, this section **may** be ignored. This is separate from the auto discovery method implemented by the jCharge app that uses mDNS (ie Bonjour/Zeroconf) for discovery and socket.io for communication.
 
 The auto discovery mechanism works as follows:
 
@@ -103,6 +103,36 @@ A `device` is a battery cell charger/discharger etc. that is connecting to a jCh
 * `configurableChargeCurrent` and `configurableDischargeCurrent` specify if the device supports charging or discharging at a configurable current.
 * `configurableChargeVoltage` and `configurableDischargeVoltage` specify if the device supports charging or discharging with a configurable voltage cutoff.
 * The `deviceId` is not needed in other packets because the server keeps track of each socket connection separately.
+
+--
+
+### Command `ping`
+
+**Sent to:** device or server
+
+#### Payload
+
+```javascript
+{}
+```
+
+#### Notes
+* This is a special packet that may be used by end devices to check that the websocket connection is still active and the server is responding to messages. A device or server **must** reply with a `pong` packet as soon as possible after receiving a `ping` packet.
+
+--
+
+### Command `pong`
+
+**Sent to:** device or server
+
+#### Payload
+
+```javascript
+{}
+```
+
+#### Notes
+* This is a special packet that may be used by end devices to check that the websocket connection is still active and the server is responding to messages. A jCharge server **must** reply with a `pong` packet as soon as possible after receiving a `ping` packet.
 
 --
 
