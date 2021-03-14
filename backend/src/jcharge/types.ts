@@ -27,12 +27,7 @@ export interface IPayloadHelloServer {
   };
 }
 
-export interface IPayloadDeviceStatus {
-  channels: [
-    {
-      id: number;
-      state:
-        | "empty"
+export type IChannelState = "empty"
         | "idle"
         | "charging"
         | "discharging"
@@ -40,11 +35,18 @@ export interface IPayloadDeviceStatus {
         | "underVoltage"
         | "overTemperature"
         | "error";
+
+export interface IChannelStatus {
+      id: number;
+      state: IChannelState;
+      stage: string;
       current: number;
       voltage: number;
       temperature: number;
     }
-  ];
+
+export interface IPayloadDeviceStatus {
+  channels: Array<IChannelStatus>;
 }
 
 interface ChargeOrDischarge {

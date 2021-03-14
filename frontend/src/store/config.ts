@@ -5,6 +5,7 @@ interface ConfigSTATE {
   httpBaseUrl: string;
   apiVersion: string;
   sioConnected: boolean;
+  buildMode: string;
 }
 
 export default {
@@ -13,11 +14,13 @@ export default {
     httpBaseUrl: "",
     apiVersion: "",
     sioConnected: false,
+    buildMode: "",
   },
   getters: {
     httpBaseUrl: (state: ConfigSTATE) => state.httpBaseUrl,
     apiVersion: (state: ConfigSTATE) => state.apiVersion,
     sioConnected: (state: ConfigSTATE) => state.sioConnected,
+    buildMode: (state: ConfigSTATE) => state.buildMode,
   },
   mutations: {
     setHttpBaseUrl(state: ConfigSTATE, payload: string) {
@@ -30,6 +33,9 @@ export default {
     },
     setSioConnected(state: ConfigSTATE, payload: boolean) {
       state.sioConnected = payload;
+    },
+    setBuildMode(state: ConfigSTATE, payload: string) {
+      state.buildMode = payload;
     }
   },
 };

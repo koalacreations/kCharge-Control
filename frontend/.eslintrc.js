@@ -78,7 +78,7 @@ module.exports = {
     radix: ["warn", "as-needed"],
     "no-empty-function": "off",
     "@typescript-eslint/no-empty-function": "off",
-    // "comma-dangle": [1, "never"],
+    "@typescript-eslint/no-floating-promises": "off",
 
     "vue/html-indent": ["error", 2, {
       "attribute": 1,

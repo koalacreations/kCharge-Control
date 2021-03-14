@@ -38,9 +38,7 @@ export class DeviceChannel extends BaseEntity {
   @Column({ type: "text", nullable: true })
   temperature!: number | null;
 
-  @ManyToOne(() => Device, (device) => device.deviceChannels, {
-    eager: true,
-  })
+  @ManyToOne(() => Device, (device) => device.deviceChannels)
   device!: Device;
 
   @OneToOne(() => Cell, {

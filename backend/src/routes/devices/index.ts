@@ -22,11 +22,11 @@ export default [
     method: "GET",
     path: "/api/devices/",
     handler: devices.get,
-    options: {
-      response: {
-        schema: Joi.array().items(deviceSchema),
-      },
-    },
+    // options: {
+    //   response: {
+    //     schema: Joi.array().items(deviceSchema),
+    //   },
+    // },
   },
   { method: "GET", path: "/api/devices/{id}/", handler: device.get },
 ];

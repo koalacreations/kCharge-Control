@@ -15,65 +15,84 @@ import { Zeroconf } from "@ionic-native/zeroconf";
 import { mapMutations, mapGetters } from "vuex";
 import { WSJoin } from "./types";
 
+if (process.env.PROD) {
+  import("@vue/devtools").then(devtools => {
+    devtools.connect(process.env.BASEURL);
+  });
+}
+
 export default defineComponent({
   name: "App",
-  methods: {
-    ...mapMutations("config", ["setHttpBaseUrl", "setApiVersion", "setSioConnected"])
-  },
   computed: {
-    ...mapGetters("config", ["httpBaseUrl"])
+    ...mapGetters("config", ["httpBaseUrl", "buildMode"])
+  },
+  beforeMount() {
+    this.setBuildMode(process.env.MODE);
+  },
+  methods: {
+    ...mapMutations("config", ["setHttpBaseUrl", "setApiVersion", "setSioConnected", "setBuildMode"]),
+    connectSio(sioUrl: string) {
+      // connect to the SIO API
+      const s = io(sioUrl);
+
+      s.on("connect", () => {
+        // console.log(`New socket.io connection with ID ${s.id}`);
+        this.setSioConnected(true);
+      });
+
+      s.on("disconnect", () => {
+        this.setSioConnected(false);
+      });
+
+      s.on("join", (payload: WSJoin) => {
+        console.log(`SIO API version ${payload.version} connected.`);
+        this.setApiVersion(payload.version);
+      });
+
+      s.on("devices", (payload: string) => {
+        console.log(payload);
+      });
+    }
   },
   async mounted() {
-    const { SplashScreen } = Plugins;
+    if (this.buildMode === "capacitor") {
+      const { SplashScreen } = Plugins;
 
-    // Hide the splash
-    await SplashScreen.hide();
+      // Hide the splash
+      await SplashScreen.hide();
 
-    Zeroconf.watch("_jcharge-http._tcp.", "local.").subscribe(result => {
-      if (result.action === "resolved") {
-        const httpUrl = `http://${result.service.ipv4Addresses[0]}:${result.service.port}`;
 
-        // set the axios base url
-        console.log(`jCharge HTTP API found at: ${httpUrl}`);
-        this.setHttpBaseUrl(httpUrl);
-      }
-    });
+      Zeroconf.watch("_jcharge-http._tcp.", "local.").subscribe(result => {
+        if (result.action === "resolved") {
+          const httpUrl = `http://${result.service.ipv4Addresses[0]}:${result.service.port}`;
 
-    Zeroconf.watch("_jcharge-sio._tcp.", "local.").subscribe(result => {
-      if (result.action === "resolved") {
-        const sioUrl = `http://${result.service.ipv4Addresses[0]}:${result.service.port}`;
+          // set the axios base url
+          console.log(`jCharge HTTP API found at: ${httpUrl}`);
+          this.setHttpBaseUrl(httpUrl);
+        }
+      });
 
-        // we found the SIO API
-        console.log(`jCharge SIO (SocketIO) API found at: ${sioUrl}`);
+      Zeroconf.watch("_jcharge-sio._tcp.", "local.").subscribe(result => {
+        if (result.action === "resolved") {
+          const sioUrl = `http://${result.service.ipv4Addresses[0]}:${result.service.port}`;
 
-        // connect to the SIO API
-        const s = io(sioUrl);
+          // we found the SIO API
+          console.log(`jCharge SIO (SocketIO) API found at: ${sioUrl}`);
+          this.connectSio(sioUrl);
+        }
+      });
 
-        s.on("connect", () => {
-          // console.log(`New socket.io connection with ID ${s.id}`);
-          this.setSioConnected(true);
-        });
-
-        s.on("disconnect", () => {
-          this.setSioConnected(false);
-        });
-
-        s.on("join", (payload: WSJoin) => {
-          console.log(`SIO API version ${payload.version} connected.`);
-          this.setApiVersion(payload.version);
-        });
-
-        s.on("devices", (payload: string) => {
-          console.log(payload);
-        });
-      }
-    });
-
-    Zeroconf.watch("_jcharge-wss._tcp.", "local.").subscribe(result => {
-      if (result.action === "resolved") {
-        console.log(`jCharge WSS (WS Server) found at: http://${result.service.ipv4Addresses[0]}:${result.service.port}`);
-      }
-    });
+      Zeroconf.watch("_jcharge-wss._tcp.", "local.").subscribe(result => {
+        if (result.action === "resolved") {
+          console.log(`jCharge WSS (WS Server) found at: http://${result.service.ipv4Addresses[0]}:${result.service.port}`);
+        }
+      });
+    }
+    else if (this.buildMode === "spa") {
+      // quasar ensures we always get a default value
+      this.setHttpBaseUrl(`${process.env.BASEURL as string }:3000`);
+      this.connectSio(`${process.env.BASEURL as string }:8080`);
+    }
   },
 });
 </script>
