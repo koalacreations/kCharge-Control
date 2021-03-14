@@ -25,7 +25,7 @@
 
       <div class="status">
         <div>{{ status }}</div>
-        <div>{{ voltage }} V</div>
+        <div>{{ voltage.toFixed(2) }} V</div>
         <div>{{ capacity }} mAh</div>
       </div>
 
@@ -53,21 +53,24 @@ export default defineComponent({
       required: true,
       type: String
     },
+    status: {
+      type: String,
+      default: "empty"
+    },
     cell: {
       required: false,
       type: Number
     },
     voltage: {
-      default: "4.1",
+      default: "-",
     },
     capacity: {
-      default: "2200",
+      default: "-",
     },
   },
   data() {
     return {
       activeClass: "",
-      status: "charging",
       interval: 0 as unknown as ReturnType<typeof setInterval>,
       scanHandler: 0 as unknown as ReturnType<typeof EventBus.$on>,
     };

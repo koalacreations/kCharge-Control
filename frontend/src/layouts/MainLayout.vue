@@ -152,6 +152,7 @@ import { defineComponent, ref } from "@vue/composition-api";
 import { mapGetters } from "vuex";
 import { Plugins } from "@capacitor/core";
 import { AxiosError } from "axios";
+import barcode from "../mixins/barcode";
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 import { ICell } from "../../../backend/src/models/Cell";
 import { EventBus } from "../event-bus";
@@ -193,6 +194,7 @@ const linksData = [
 
 export default defineComponent({
   name: "MainLayout",
+  mixins: [barcode],
   data() {
     return {
       continuousMode: false,
@@ -215,13 +217,6 @@ export default defineComponent({
     ...mapGetters("config", ["sioConnected"]),
     icons() {
       return icons;
-    },
-    barcodeEnable(): boolean {
-      return (
-        (this.$q.platform.is.ios as boolean) ||
-        (this.$q.platform.is.android as boolean) ||
-        false
-      );
     },
   },
   watch:{

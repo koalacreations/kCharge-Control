@@ -13,10 +13,13 @@
 
     <div class="row justify-center q-gutter-sm">
       <cell
-        v-for="index in device.channels"
-        :key="index"
-        :cell="index"
+        v-for="channel in device.deviceChannels"
+        :key="channel.id"
+        :cell="channel.cell"
         :device-id="device.id"
+        :voltage="channel.voltage"
+        :current="channel.current"
+        :status="channel.state"
       />
     </div>
   </div>
