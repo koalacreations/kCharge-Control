@@ -38,23 +38,32 @@
           round
           flat
           v-model="continuousMode"
-          :disable="!sioConnected"
+          :disable="!sioConnected || !barcodeEnable"
         >
           <q-tooltip :delay="200">
-            Enable continous scanning mode (ie for bulk processing cells).
+            Enable continuous scanning mode (ie for bulk processing cells).
           </q-tooltip>
         </q-toggle>
 
         <q-btn
-          v-if="!scanning && barcodeEnable"
+          v-if="!scanning"
           round
           flat
           :icon="icons.scanQr"
           @click="startScan()"
-          :disable="!sioConnected"
+          :disable="!sioConnected || !barcodeEnable"
         >
-          <q-tooltip :delay="200">
-            Add or find a cell
+          <q-tooltip
+            v-if="barcodeEnable"
+            :delay="200"
+          >
+            Add or find a cell.
+          </q-tooltip>
+          <q-tooltip
+            v-else
+            :delay="500"
+          >
+            Sorry, barcode scanning is only supported on the iOS or Android app.
           </q-tooltip>
         </q-btn>
 
@@ -65,19 +74,6 @@
           @click="stopScan()"
           v-close-popup
         />
-
-        <q-btn
-          v-else
-          round
-          flat
-          icon="mdi-camera"
-          disable
-        >
-          <q-tooltip :delay="500">
-            Sorry, barcode scanning isn't supported on this device. Try the
-            mobile app.
-          </q-tooltip>
-        </q-btn>
       </q-toolbar>
     </q-header>
 
@@ -119,7 +115,12 @@
         key="main-container"
         class="q-mx-md"
       >
-        <router-view />
+        <transition
+          enter-active-class="animated fadeIn"
+          leave-active-class="animated fadeOut"
+        >
+          <router-view />
+        </transition>
       </q-page-container>
     </transition-group>
     <transition-group
@@ -243,34 +244,37 @@ export default defineComponent({
   },
   beforeRouteLeave(to, from, next) {
     this.stopScan();
+
+    // if the route changes, then record a referer. This means when we want to go back, we can go
+    // back to the last *different* route. e.g. scan X different cells and the back handler below
+    // takes you back to the last *different* page so you don't have to hit back X times.
+    if (this.$router) {
+      this.$router.referer = from;
+    }
     next();
   },
   methods: {
     async goBack() {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (this.$route.meta.backRoute) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
-        await this.$router.push({name: this.$route.meta.backRoute});
-      } else {
-        this.$router.go(-1);
-      }
+      await this.$router.push({name: this.$router.referer || this.$route.meta.backRoute || "dashboard"});
     },
     stopScan() {
-      const container = document.getElementById("main-container");
-      const body = document.getElementById("main-body");
-      if (container) container.classList.remove("hide");
-      if (body) body.classList.remove("transparentbg");
-      this.scanning = false;
+      // @ts-ignore
+      if (this.barcodeEnable) {
+        const container = document.getElementById("main-container");
+        const body = document.getElementById("main-body");
+        if (container) container.classList.remove("hide");
+        if (body) body.classList.remove("transparentbg");
+        this.scanning = false;
 
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-        BS.showBackground().catch(null);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-        BS.stopScan().catch(null);
-        EventBus.$emit("scan-stop");
-      }
-      catch {
-        // do nothing
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
+          BS.showBackground().catch(null);
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
+          BS.stopScan().catch(null);
+          EventBus.$emit("scan-stop");
+        } catch {
+          // do nothing
+        }
       }
     },
     async retrieveCell() {
@@ -279,100 +283,105 @@ export default defineComponent({
       this.retrieved = data;
     },
     async startScan(external=false, slotId="") {
-      this.leftDrawerOpen = false;
-      this.scanning = true;
-      let decoded = null;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
-      const status = await BS.checkPermission({ force: true });
+      // @ts-ignore
+      if (this.barcodeEnable) {
+        this.leftDrawerOpen = false;
+        this.scanning = true;
+        let decoded = null;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
+        const status = await BS.checkPermission({ force: true });
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (!status.granted) {
-        return;
-      }
-
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
-      BS.hideBackground().catch(() => {});
-      const container = document.getElementById("main-container");
-      const body = document.getElementById("main-body");
-      if (body) body.classList.add("transparentbg");
-      if (container) container.classList.add("hide");
-
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
-      const result = await BS.startScan() as {content: string};
-
-      if (container) container.classList.remove("hide");
-      if (body) body.classList.remove("transparentbg");
-
-      try {
-        if (result.content) decoded = result.content.split(",");
-        this.stopScan();
-
-        if (decoded?.length !== 2) {
-          this.$q.notify({
-            color: "red-4",
-            textColor: "white",
-            icon: "mdi-alert-circle",
-            message: "Malformed Barcode",
-          });
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        if (!status.granted) {
           return;
         }
-      } catch (error) {
-        this.scanning = false;
-        this.cellType = "";
-        this.cellId = 0;
-        return;
-      }
 
-      // eslint-disable-next-line prefer-destructuring
-      const cellType = decoded[0];
-      const cellId = decoded[1];
-      this.cellId = parseInt(cellId);
-      this.cellType = cellType;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
+        BS.hideBackground().catch(() => {});
+        const container = document.getElementById("main-container");
+        const body = document.getElementById("main-body");
+        if (body) body.classList.add("transparentbg");
+        if (container) container.classList.add("hide");
 
-      if (external) {
-        // if we're an external scan then we want to stop scanning and emit the scan result to the event bus
-        this.stopScan();
-        EventBus.$emit(`scan-result-${slotId}`, {cellId, cellType});
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
+        const result = await BS.startScan() as {content: string};
 
-      } else {
-        const response = await this.$axios
-        .post("/api/cells/", { type: cellType, id: cellId })
-        .catch(async (error) => {
-          const cellResponse = (error as AxiosError).response;
+        if (container) container.classList.remove("hide");
+        if (body) body.classList.remove("transparentbg");
 
-          if (cellResponse?.status === 409) {
-            await this.retrieveCell();
+        try {
+          if (result.content) decoded = result.content.split(",");
+          this.stopScan();
+
+          if (decoded?.length !== 2) {
+            this.$q.notify({
+              color: "red-4",
+              textColor: "white",
+              icon: "mdi-alert-circle",
+              message: "Malformed Barcode",
+            });
+            return;
+          }
+        } catch (error) {
+          this.scanning = false;
+          this.cellType = "";
+          this.cellId = 0;
+          return;
+        }
+
+        // eslint-disable-next-line prefer-destructuring
+        const cellType = decoded[0];
+        const cellId = decoded[1];
+        this.cellId = parseInt(cellId);
+        this.cellType = cellType;
+
+        if (external) {
+          // if we're an external scan then we want to stop scanning and emit the scan result to the event bus
+          this.stopScan();
+          EventBus.$emit(`scan-result-${slotId}`, {cellId, cellType});
+
+        } else {
+          const response = await this.$axios
+            .post("/api/cells/", { type: cellType, id: cellId })
+            .catch(async (error) => {
+              const cellResponse = (error as AxiosError).response;
+
+              if (cellResponse?.status === 409) {
+                await this.retrieveCell();
+
+                this.$q.notify({
+                  color: "green-4",
+                  textColor: "white",
+                  icon: "mdi-battery",
+                  message: `Found existing ${this.retrieved.cellType.name}`,
+                  timeout: 2000,
+                });
+                this.viewCell(cellId);
+              }
+            });
+
+          if (response && response.status === 201) {
+            const cell = response?.data as ICell;
+            this.retrieved = cell;
 
             this.$q.notify({
               color: "green-4",
               textColor: "white",
-              icon: "mdi-battery",
-              message: `Found existing ${this.retrieved.cellType.name}`,
-              timeout: 2000,
+              icon: "mdi-new-box",
+              message: `Added a new ${cell.cellType.name}`,
+              timeout: this.continuousMode ? 2000 : 1000,
             });
-            this.viewCell(cellId);
-          }
-        });
 
-        if (response && response.status === 201) {
-          const cell = response?.data as ICell;
-          this.retrieved = cell;
-
-          this.$q.notify({
-            color: "green-4",
-            textColor: "white",
-            icon: "mdi-new-box",
-            message: `Added a new ${cell.cellType.name}`,
-            timeout: this.continuousMode ? 2000 : 1000,
-          });
-
-          if (this.continuousMode) {
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                setTimeout(() => {this.startScan();}, 1000);
-          } else {
-            this.viewCell(cellId);
+            if (this.continuousMode) {
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises
+              setTimeout(() => {this.startScan();}, 1000);
+            } else {
+              this.viewCell(cellId);
+            }
           }
         }
+      } else {
+        console.warn("Warning: Barcode scanning attempted on unsupported platform.");
       }
     },
     async restartScan() {
