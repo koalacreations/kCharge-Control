@@ -15,11 +15,11 @@ export default [
     method: "GET",
     path: "/api/cells/",
     handler: cells.get,
-    options: {
-      response: {
-        schema: Joi.array().items(cellSchema),
-      },
-    },
+    // options: {
+    //   response: {
+    //     schema: Joi.array().items(cellSchema),
+    //   },
+    // },
   },
   {
     method: "POST",

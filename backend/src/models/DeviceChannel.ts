@@ -38,6 +38,9 @@ export class DeviceChannel extends BaseEntity {
   @Column({ type: "text", nullable: true })
   temperature!: number | null;
 
+  @Column()
+  capacity!: number;
+
   @ManyToOne(() => Device, (device) => device.deviceChannels)
   device!: Device;
 
@@ -76,5 +79,6 @@ export namespace DeviceChannel {
     voltage: number;
     temperature: number | null;
     cell?: ICell;
+    capacity: number;
   }
 }

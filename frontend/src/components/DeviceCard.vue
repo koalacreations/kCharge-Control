@@ -12,14 +12,15 @@
     </div>
 
     <div class="row justify-center q-gutter-sm">
-      <cell
-        v-for="channel in device.deviceChannels"
+      <channel
+        v-for="channel in channels"
         :key="channel.id"
-        :channel="channel.channelId"
+        :channel="channel.id"
         :device-id="device.id"
         :voltage="channel.voltage"
         :current="channel.current"
         :status="channel.state"
+        :capacity="channel.capacity"
       />
     </div>
   </div>
@@ -27,12 +28,14 @@
 
 <script lang="ts" >
 import { defineComponent } from "@vue/composition-api";
-import Cell from "./Channel.vue";
+import Channel from "./Channel.vue";
 import icons from "../icons/index";
 import { IDevice } from "../../../backend/src/types/Device";
+import { DeviceChannel } from "../../../backend/src/models/DeviceChannel";
+import IDeviceChannel = DeviceChannel.IDeviceChannel;
 
 export default defineComponent({
-  components: { Cell },
+  components: { Channel },
   name: "DeviceCard",
   props: {
     device: {
@@ -48,6 +51,13 @@ export default defineComponent({
         return this.device?.deviceName || `Unnamed ${this.device?.deviceManufacturer} ${this.device?.deviceModel || "Device"}`;
       }
       return this.device?.deviceName || `Unnamed ${this.device?.deviceModel || "Device"}`;
+    },
+    channels(): IDeviceChannel[] {
+      // vuex gets upset if you try to mutate the array directly so we make a copy
+      // then we sort it so they are always ordered correctly
+      return [...this.device.deviceChannels].sort((a, b) => {
+        return a.id > b.id;
+      });
     }
   },
   methods: {

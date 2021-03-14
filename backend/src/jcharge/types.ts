@@ -43,10 +43,11 @@ export interface IChannelStatus {
       current: number;
       voltage: number;
       temperature: number;
+      capacity: number;
     }
 
 export interface IPayloadDeviceStatus {
-  channels: Array<IChannelStatus>;
+  channels: IChannelStatus[];
 }
 
 interface ChargeOrDischarge {

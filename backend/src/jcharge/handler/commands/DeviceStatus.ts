@@ -15,6 +15,7 @@ export default async function DeviceStatus(payload: IPayloadDeviceStatus, device
       channelEntity.temperature = channel.temperature;
       channelEntity.state = (channel.state as DeviceChannel.DeviceChannelState);
       channelEntity.stage = channel.stage;
+      channelEntity.capacity = channel.capacity;
       channelEntity.save();
     });
   }

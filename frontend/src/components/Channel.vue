@@ -9,7 +9,7 @@
       <div class="status">
         <div>{{ status }}</div>
         <div>{{ voltage.toFixed(2) }} V</div>
-        <div>{{ capacity }} mAh</div>
+        <div>{{ capacity.toFixed(2) }} mAh</div>
       </div>
 
       <div class="title">
@@ -76,7 +76,7 @@
             <p>
               <b>Status:</b> {{ status }}<br>
               <b>Voltage:</b> {{ voltage.toFixed(2) }} V<br>
-              <b>Capacity:</b> {{ capacity }} mAh<br>
+              <b>Capacity:</b> {{ capacity.toFixed(2) }} mAh<br>
             </p>
           </div>
         </q-card-section>
@@ -134,6 +134,10 @@ export default defineComponent({
     this.interval = setInterval(() => {
       if (this.status === "charging" || this.status === "discharging")
         this.activeClass = this.activeClass ? "" : "yellow";
+      else if (this.status === "complete")
+        this.activeClass = "green";
+      else if (this.status === "empty" || this.status === "idle")
+        this.activeClass = "blue";
       else this.activeClass = "";
     }, 1000);
 
@@ -185,5 +189,9 @@ export default defineComponent({
 
 .yellow {
   background: $warning;
+}
+
+.blue {
+  background: $primary;
 }
 </style>

@@ -55,6 +55,7 @@ export default defineComponent({
   mounted() {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     if (this.httpBaseUrl) this.getDevices(); // if we have a baseUrl then fetch devices
+    setInterval(this.getDevices, 500);
   },
   methods: {
     ...mapActions("devices", ["getDevices"]),

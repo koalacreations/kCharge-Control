@@ -67,7 +67,7 @@ export default defineComponent({
           label: "Type",
           field: "cellType",
           sortable: true,
-          format: (val: ICellType) => val.name
+          format: (val: ICellType) => val?.name
         },
         {
           name: "class", label: "Class", field: "class", sortable: true

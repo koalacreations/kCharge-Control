@@ -151,7 +151,8 @@ A `device` is a battery cell charger/discharger etc. that is connecting to a jCh
 			"stage": "arbitrary_string",
 			"current": 1900,
 			"voltage": 4200,
-			"temperature": 25
+			"temperature": 25,
+			"capacity": 1300
 		}
 	]
 }
@@ -166,6 +167,7 @@ A `device` is a battery cell charger/discharger etc. that is connecting to a jCh
 * `current` is the current measured on the channel in mA.
 * `voltage` is the voltage measured on the channel in mV.
 * `temperature` is the temperature measured on the channel in degrees Celsius. It **must** be a number or `null`.
+* `capacity` is the current capacity (so far) of the cell in the channel in mAh. It **may** remain at the last measured capacity, or return to 0 after a discharge is finished. This behaviour is up to the device's firmware. It **must** be a positive integer, or 0.
 * A device **may** send a `deviceStatus` message as often as reasonable (for example each time a channel status or measurement changes) but **should** be about every 1-5 seconds.
 
 #### LED Guidelines

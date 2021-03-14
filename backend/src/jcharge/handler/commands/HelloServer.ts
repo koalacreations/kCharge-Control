@@ -1,11 +1,13 @@
 import Chalk from "chalk";
 import { IPayloadHelloServer } from "../../types";
 import { Device } from "../../../models/Device";
+import { DeviceChannel } from "../../../models/DeviceChannel";
 
 export default async function HelloServer(payload: IPayloadHelloServer) {
   let device = await Device.findOne(payload.id);
 
   if (!device) {
+    // tslint:disable-next-line:no-console
     console.log(Chalk.blue(`Found new device: ${payload.id}`));
     const newDevice = Device.create({
       id: payload.id,
@@ -22,5 +24,17 @@ export default async function HelloServer(payload: IPayloadHelloServer) {
     });
 
     device = await newDevice.save();
+
+    for (let i = 1; i <= device.channels; i++) {
+      DeviceChannel.create({
+        channelId: i,
+        state: DeviceChannel.DeviceChannelState.empty,
+        current: 0,
+        voltage: 0,
+        temperature: 0,
+        capacity: 0,
+        device
+      }).save();
+    }
   }
 }

@@ -12,7 +12,6 @@ const get = async () => {
     })
   );
 
-  console.log(newDevices[0].deviceChannels);
   return newDevices;
 };
 
