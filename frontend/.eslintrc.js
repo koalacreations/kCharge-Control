@@ -79,6 +79,7 @@ module.exports = {
     "no-empty-function": "off",
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-floating-promises": "off",
+    "@typescript-eslint/ban-ts-comment": "off", // USE SPARINGLY!
 
     "vue/html-indent": ["error", 2, {
       "attribute": 1,

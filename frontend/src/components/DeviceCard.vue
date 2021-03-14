@@ -15,7 +15,7 @@
       <cell
         v-for="channel in device.deviceChannels"
         :key="channel.id"
-        :cell="channel.cell"
+        :channel="channel.channelId"
         :device-id="device.id"
         :voltage="channel.voltage"
         :current="channel.current"

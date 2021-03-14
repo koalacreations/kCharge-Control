@@ -6,23 +6,6 @@
     <div
       class="cell column items-center q-py-sm q-px-xs"
     >
-      <div class="row q-pb-sm">
-        <q-btn
-          class="col q-mr-xs"
-          round
-          color="primary"
-          size="0.85em"
-          :icon="icons.scanQr"
-        />
-        <q-btn
-          class="col"
-          round
-          color="primary"
-          size="0.85em"
-          :icon="icons.info"
-        />
-      </div>
-
       <div class="status">
         <div>{{ status }}</div>
         <div>{{ voltage.toFixed(2) }} V</div>
@@ -30,7 +13,7 @@
       </div>
 
       <div class="title">
-        {{ cell }}
+        {{ channel }}
       </div>
 
       <div
@@ -38,6 +21,67 @@
         :class="activeClass"
       />
     </div>
+
+    <q-dialog
+      v-model="dialog"
+    >
+      <q-card style="min-width: 300px;">
+        <q-card-section>
+          <div class="q-pb-md row">
+            <div class="text-h6">
+              Channel {{ channel }}
+            </div>
+            <q-space />
+            <div>
+              <q-btn
+                :icon="icons.close"
+                flat
+                round
+                dense
+                v-close-popup
+              />
+            </div>
+          </div>
+
+          <div>
+            <q-btn
+              class="col q-mr-xs q-mb-sm"
+              color="primary"
+              :icon="icons.battery"
+              label="Start Discharge"
+              :disable="status !== 'idle'"
+            >
+              <q-tooltip
+                v-if="!barcodeEnable"
+                :delay="500"
+              >
+                Sorry, barcode scanning is only supported on the iOS or Android app.
+              </q-tooltip>
+            </q-btn>
+            <q-btn
+              class="col q-mr-xs q-mb-sm"
+              color="primary"
+              :icon="icons.scanQr"
+              label="Scan Cell"
+              :disable="!barcodeEnable"
+            >
+              <q-tooltip
+                v-if="!barcodeEnable"
+                :delay="500"
+              >
+                Sorry, barcode scanning is only supported on the iOS or Android app.
+              </q-tooltip>
+            </q-btn>
+
+            <p>
+              <b>Status:</b> {{ status }}<br>
+              <b>Voltage:</b> {{ voltage.toFixed(2) }} V<br>
+              <b>Capacity:</b> {{ capacity }} mAh<br>
+            </p>
+          </div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -45,9 +89,11 @@
 import { defineComponent } from "@vue/composition-api";
 import { EventBus } from "../event-bus";
 import icons from "../icons";
+import barcode from "../mixins/barcode";
 
 export default defineComponent({
   name: "Cell",
+  mixins: [barcode],
   props: {
     deviceId: {
       required: true,
@@ -57,8 +103,8 @@ export default defineComponent({
       type: String,
       default: "empty"
     },
-    cell: {
-      required: false,
+    channel: {
+      required: true,
       type: Number
     },
     voltage: {
@@ -73,6 +119,7 @@ export default defineComponent({
       activeClass: "",
       interval: 0 as unknown as ReturnType<typeof setInterval>,
       scanHandler: 0 as unknown as ReturnType<typeof EventBus.$on>,
+      dialog: false,
     };
   },
   computed: {
@@ -90,13 +137,16 @@ export default defineComponent({
       else this.activeClass = "";
     }, 1000);
 
-    // this.scanHandler = EventBus.$on(`scan-result-${this.deviceId}-${this.cell}`, (result: {cellId: string, cellType: string}) => {
-    //     console.log("Scan result! ", result);
-    // });
+    this.scanHandler = EventBus.$on(`scan-result-${this.deviceId}-${this.channel}`, (result: {cellId: string, cellType: string}) => {
+        console.log("Scan result! ", result);
+    });
   },
   methods: {
     cellClicked() {
-      EventBus.$emit("scan-start", {slotId: `${this.deviceId}-${this.cell || ""}`});
+      this.dialog = true;
+    },
+    startScan() {
+      EventBus.$emit("scan-start", {slotId: `${this.deviceId}-${this.channel || ""}`});
     }
   }
 });

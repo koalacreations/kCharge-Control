@@ -4,5 +4,6 @@ export default {
   noCells: "mdi-battery-off",
   scanQr: "mdi-qrcode-scan",
   back: "mdi-arrow-left",
-  menu: "mdi-menu"
+  menu: "mdi-menu",
+  close: "mdi-close"
 };
