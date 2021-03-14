@@ -14,13 +14,19 @@ export class Parser {
   }
 
   parse(packet: IPacket): IPacket {
+    const parsedPacket = packet;
     if (packet.version !== this.version) {
       console.log(Chalk.red("Unexpected protocol version number"));
     }
 
     const command = (<any>Parser.PacketType)[packet.command];
 
-    return packet;
+    // if we get a string as the payload try to parse it as JSON
+    if (typeof packet.payload === "string") {
+      parsedPacket.payload = JSON.parse(packet.payload);
+    }
+
+    return parsedPacket;
   }
 }
 

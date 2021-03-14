@@ -64,7 +64,8 @@ A `device` is a battery cell charger/discharger etc. that is connecting to a jCh
 ```
 
 #### Notes
-* `serverHost` is the full host and port that **should** be connected to via a websocket.
+* `websocketHost` is the full host and port that **should** be connected to via a websocket.
+* `apiHost` is the full host and port that other devices (ie frontend/app) can use to connect via the HTTP API.
 * `time` is the current time in seconds since the unix epoch and **may** be used by a device.
 * `serverName` is the name of the backend server and **may** be used by a device.
 
