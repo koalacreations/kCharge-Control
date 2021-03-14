@@ -63,7 +63,7 @@
             v-else
             :delay="500"
           >
-            Sorry, barcode scanning is only supported on the iOS or Android app.
+            Barcode scanning is only supported on the iOS or Android app.
           </q-tooltip>
         </q-btn>
 
@@ -249,12 +249,15 @@ export default defineComponent({
     // back to the last *different* route. e.g. scan X different cells and the back handler below
     // takes you back to the last *different* page so you don't have to hit back X times.
     if (this.$router) {
+      // @ts-ignore
       this.$router.referer = from;
     }
     next();
   },
   methods: {
     async goBack() {
+      // @ts-ignore
+      // eslint-disable-next-line
       await this.$router.push({name: this.$router.referer || this.$route.meta.backRoute || "dashboard"});
     },
     stopScan() {

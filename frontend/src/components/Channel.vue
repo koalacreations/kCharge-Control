@@ -55,7 +55,7 @@
                 v-if="!barcodeEnable"
                 :delay="500"
               >
-                Sorry, barcode scanning is only supported on the iOS or Android app.
+                Unable to start a discharge unless this channel is idle.
               </q-tooltip>
             </q-btn>
             <q-btn
@@ -69,7 +69,7 @@
                 v-if="!barcodeEnable"
                 :delay="500"
               >
-                Sorry, barcode scanning is only supported on the iOS or Android app.
+                Barcode scanning is only supported on the iOS or Android app.
               </q-tooltip>
             </q-btn>
 
@@ -111,7 +111,7 @@ export default defineComponent({
       default: "-",
     },
     capacity: {
-      default: "-",
+      default: "0",
     },
   },
   data() {

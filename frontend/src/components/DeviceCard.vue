@@ -27,7 +27,7 @@
 
 <script lang="ts" >
 import { defineComponent } from "@vue/composition-api";
-import Cell from "./Cell.vue";
+import Cell from "./Channel.vue";
 import icons from "../icons/index";
 import { IDevice } from "../../../backend/src/types/Device";
 
