@@ -32,7 +32,6 @@ import Channel from "./Channel.vue";
 import icons from "../icons/index";
 import { IDevice } from "../../../backend/src/types/Device";
 import { DeviceChannel } from "../../../backend/src/models/DeviceChannel";
-import IDeviceChannel = DeviceChannel.IDeviceChannel;
 
 export default defineComponent({
   components: { Channel },
@@ -52,12 +51,14 @@ export default defineComponent({
       }
       return this.device?.deviceName || `Unnamed ${this.device?.deviceModel || "Device"}`;
     },
-    channels(): IDeviceChannel[] {
+    channels(): DeviceChannel[] {
       // vuex gets upset if you try to mutate the array directly so we make a copy
       // then we sort it so they are always ordered correctly
-      return [...this.device.deviceChannels].sort((a, b) => {
-        return a.id > b.id;
-      });
+      if (this.device) {
+        // @ts-ignore
+        return [...this.device.deviceChannels as DeviceChannel[]].sort((a, b) => a.id > b.id) ;
+      }
+      return [];
     }
   },
   methods: {

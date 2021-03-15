@@ -1,7 +1,7 @@
 import { DeviceChannel } from "../models/DeviceChannel";
 
 export interface IDevice {
-  id: string;
+  id: number;
   deviceName: string | null;
   deviceManufacturer: string | null;
   deviceModel: string | null;
@@ -14,15 +14,16 @@ export interface IDevice {
     configurableChargeVoltage: boolean;
     configurableDischargeVoltage: boolean;
   };
+  deviceChannels: DeviceChannel[];
 }
 
 export interface IDeviceStatus extends IDevice {
-  channels: Array<DeviceChannel.IDeviceChannel>
+  channels: DeviceChannel.IDeviceChannel[]
 }
 
 export default class Device implements IDevice {
   constructor() {
-    this.id = "";
+    this.id = 0;
     this.deviceName = null;
     this.deviceManufacturer = null;
     this.deviceModel = null;
@@ -35,9 +36,10 @@ export default class Device implements IDevice {
       configurableChargeVoltage: false,
       configurableDischargeVoltage: false,
     };
+    this.deviceChannels = [];
   }
 
-  id: string;
+  id: number;
 
   deviceName: string | null;
 
@@ -54,4 +56,6 @@ export default class Device implements IDevice {
     configurableChargeVoltage: boolean;
     configurableDischargeVoltage: boolean;
   };
+
+  deviceChannels: DeviceChannel[];
 }
