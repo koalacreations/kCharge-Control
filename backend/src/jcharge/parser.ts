@@ -19,8 +19,6 @@ export class Parser {
       console.log(Chalk.red("Unexpected protocol version number"));
     }
 
-    const command = (<any>Parser.PacketType)[packet.command];
-
     // if we get a string as the payload try to parse it as JSON
     if (typeof packet.payload === "string") {
       parsedPacket.payload = JSON.parse(packet.payload);
@@ -34,6 +32,8 @@ export namespace Parser {
   export enum PacketType {
     Hello = "hello",
     HelloServer = "helloServer",
+    Ping = "ping",
+    Pong = "pong",
     DeviceStatus = "deviceStatus",
     ChargeComplete = "chargeComplete",
     DischargeComplete = "dischargeComplete",

@@ -1,3 +1,5 @@
+// tslint:disable:no-empty-interface
+
 export interface IPacket {
   version: number;
   command: string;
@@ -49,6 +51,9 @@ export interface IChannelStatus {
 export interface IPayloadDeviceStatus {
   channels: IChannelStatus[];
 }
+
+export interface IPayloadPing {}
+export interface IPayloadPong {}
 
 interface ChargeOrDischarge {
   channel: number;
