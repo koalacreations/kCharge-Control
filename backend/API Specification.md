@@ -20,7 +20,7 @@ The jCharge Control protocol is web socket based. Websockets were specifically c
 * A device can be fully automated and the jCharge backend server / UI is simply monitoring a device, the device can be fully controlled by the jCharge backend server / UI, or a mixture of both.
 
 ## Packet format
-A jCharge Control packet is defined as a single JSON object that follows the format below. Each packet's example object **must** be put in the `payload` key to form a valid jCharge Control packet. The `deviceId` must be unique.
+A jCharge Control packet is defined as a single JSON object that follows the format below. Each packet's example object **must** be put in the `payload` key to form a valid jCharge Control packet. The `deviceId` must be unique and **must** be included in all packets to and from a device.
 
 ```
 {
