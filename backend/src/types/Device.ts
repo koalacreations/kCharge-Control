@@ -5,6 +5,7 @@ export interface IDevice {
   deviceName: string | null;
   deviceManufacturer: string | null;
   deviceModel: string | null;
+  connected: boolean;
   capabilities: {
     channels: number;
     charge: boolean;
@@ -27,6 +28,7 @@ export default class Device implements IDevice {
     this.deviceName = null;
     this.deviceManufacturer = null;
     this.deviceModel = null;
+    this.connected = false;
     this.capabilities = {
       channels: 0,
       charge: false,
@@ -46,6 +48,8 @@ export default class Device implements IDevice {
   deviceManufacturer: string | null;
 
   deviceModel: string | null;
+
+  connected: boolean;
 
   capabilities: {
     channels: number;

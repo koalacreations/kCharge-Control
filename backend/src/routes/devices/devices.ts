@@ -4,15 +4,13 @@ import { DeviceChannel } from "../../models/DeviceChannel";
 const get = async () => {
   const devices = await Device.find();
 
-  const newDevices = await Promise.all(
+  return Promise.all(
     devices.map(async (device) => {
       const newDevice = device;
       newDevice.deviceChannels = await DeviceChannel.find({ where: { device: device.id } });
       return newDevice;
     })
   );
-
-  return newDevices;
 };
 
 export default { get };

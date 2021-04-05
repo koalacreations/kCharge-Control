@@ -1,9 +1,10 @@
 import Chalk from "chalk";
+import WebSocket from "ws";
 import { IPayloadHelloServer } from "../../types";
 import { Device } from "../../../models/Device";
 import { DeviceChannel } from "../../../models/DeviceChannel";
 
-export default async function HelloServer(payload: IPayloadHelloServer) {
+export default async function HelloServer(payload: IPayloadHelloServer, ws: WebSocket) {
   let device = await Device.findOne(payload.id);
 
   if (!device) {
@@ -36,5 +37,11 @@ export default async function HelloServer(payload: IPayloadHelloServer) {
         device
       }).save();
     }
+  } else {
+    device.connected = true;
+    device.save();
+    // @ts-ignore
+    // eslint-disable-next-line no-param-reassign
+    ws.deviceId = device.id;
   }
 }

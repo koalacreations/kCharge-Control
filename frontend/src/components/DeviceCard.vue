@@ -1,14 +1,30 @@
 <template>
-  <div class="column justify-center device-container q-pa-md">
-    <div class="text-h5 q-mb-md text-center">
+  <div
+    class="column justify-center device-container q-pa-md no-select clickable"
+    @click.stop="showInfo"
+  >
+    <div class="text-h5 q-mb-md text-center title">
       {{ name }}
-      <q-btn
-        round
-        outline
-        size="sm"
-        :icon="icons.info"
-        @click="showInfo"
-      />
+
+      <q-icon
+        v-if="device.connected"
+        class="q-pl-sm success"
+        :name="icons.connected"
+      >
+        <q-tooltip>
+          This device is currently connected. Try restarting it if you're having problems.
+        </q-tooltip>
+      </q-icon>
+
+      <q-icon
+        v-else
+        class="q-pl-sm error"
+        :name="icons.disconnected"
+      >
+        <q-tooltip>
+          This device is currently disconnected.
+        </q-tooltip>
+      </q-icon>
     </div>
 
     <div class="row justify-center q-gutter-sm">
@@ -27,6 +43,7 @@
 </template>
 
 <script lang="ts" >
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { defineComponent } from "@vue/composition-api";
 import Channel from "./Channel.vue";
 import icons from "../icons/index";
@@ -56,7 +73,7 @@ export default defineComponent({
       // then we sort it so they are always ordered correctly
       if (this.device) {
         // @ts-ignore
-        return [...this.device.deviceChannels as DeviceChannel[]].sort((a, b) => a.id > b.id) ;
+        return [...this.device.deviceChannels].sort((a, b) => a.id > b.id) ;
       }
       return [];
     }

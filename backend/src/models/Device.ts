@@ -26,6 +26,9 @@ export class Device extends BaseEntity {
   @Column({ type: "text", nullable: true })
   deviceModel!: string | null;
 
+  @Column({ default: () => false })
+  connected!: boolean;
+
   @Column()
   channels!: number;
 

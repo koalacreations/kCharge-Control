@@ -12,17 +12,19 @@ import routes from "./routes";
 import Parser from "./jcharge/parser";
 import Handler from "./jcharge/handler";
 import { WSResponse } from "../../frontend/src/types";
+import { Device } from "./models/Device";
+import { DeviceChannel } from "./models/DeviceChannel";
 
-// Our jCharge packet aprser
+// Our jCharge packet parser
 const packetParser = new Parser(1);
+// tslint:disable-next-line:no-var-requires
 const pjson = require("../package.json");
 
 // Our port config
 const WS_PORT = 12345;
 const DISCOVERY_PORT = 54321;
 const HTTP_PORT = 3000;
-const DeviceConnections = {};
-const SocketIOConnections = [] as Array<Socket>;
+const SocketIOConnections = [] as Socket[];
 
 function calculateAddresses() {
   const interfaces = networkInterfaces();
@@ -52,7 +54,13 @@ function calculateAddresses() {
 
 // Setup our jCharge websocket server
 const init = async () => {
-  const wss = new WebSocket.Server({ port: WS_PORT });
+  let wss = null;
+  try {
+    wss = new WebSocket.Server({ port: WS_PORT });
+  } catch (e) {
+    console.log("ERRRRRROR");
+    console.log(e);
+  }
   const broadcaster = dgram.createSocket({ type: "udp4" });
   await broadcaster.bind(DISCOVERY_PORT, "0.0.0.0");
   await broadcaster.setBroadcast(true);
@@ -88,13 +96,88 @@ const init = async () => {
   // eslint-disable-next-line no-console
   console.log(Chalk.blue(`Websocket server running on port ${WS_PORT}`));
 
-  // whenever we get a new connection, setup a message handler
+  // creates the db connection
+  await createConnection();
+
+  // find our device and update it's state
+  // @ts-ignore
+  const devices = await Device.find();
+
+  devices.map(async (device) => {
+    device.connected = false;
+    device.save();
+
+    const channels = await DeviceChannel.find({ where: { device: device.id } });
+
+    // reset all the channels back to default values
+    channels.map((channel) => {
+      channel.state = DeviceChannel.DeviceChannelState.empty;
+      channel.current = 0;
+      channel.voltage = 0;
+      channel.temperature = 0;
+      channel.capacity = 0;
+      channel.save();
+    });
+  });
+
+  // whenever we get a new connection, setup a message handler and heartbeats
   wss.on("connection", (ws) => {
+    // @ts-ignore
+    ws.isAlive = true;
+
+    // Setup a regular heartbeat interval
+    // @ts-ignore
+    ws.heartbeartInterval = setInterval(async () => {
+      // @ts-ignore
+      if (ws.isAlive === false) {
+        // if we didn't get a pong since the last time we ran, assume we got disconnected
+        console.log("DISCONNECTED :(");
+        // @ts-ignore
+        clearInterval(ws.heartbeartInterval);
+
+        // find our device and update it's state
+        // @ts-ignore
+        const device = await Device.findOne(ws.deviceId);
+
+        if (device) {
+          device.connected = false;
+          device.save();
+
+          const channels = await DeviceChannel.find({ where: { device: device.id } });
+
+          // reset all the channels back to default values
+          channels.map((channel) => {
+            channel.state = DeviceChannel.DeviceChannelState.empty;
+            channel.current = 0;
+            channel.voltage = 0;
+            channel.temperature = 0;
+            channel.capacity = 0;
+            channel.save();
+          });
+        }
+
+        // terminate (what's left of) the websocket connection
+        return ws.terminate();
+      }
+
+      // @ts-ignore
+      ws.isAlive = false;
+      ws.ping();
+
+      return true;
+    }, 7000);
+
+    console.log("============ DEVICE CONNECTED ============");
     const packetHandler = new Handler(ws);
 
     ws.on("message", (message) => {
       const parsed = packetParser.parse(JSON.parse(message.toString()));
-      packetHandler.handle(parsed);
+      packetHandler.handle(parsed, ws);
+    });
+
+    ws.on("pong", () => {
+      // @ts-ignore
+      ws.isAlive = true;
     });
   });
 
@@ -135,11 +218,11 @@ const init = async () => {
   // add a listener to the "response" event to console log the request method and path for dev
   server.events.on("response", (request) => {
     // eslint-disable-next-line no-console
-    console.log(
-      `${request.info.remoteAddress}: ${request.method.toUpperCase()} ${
-        request.path
-      }`
-    );
+    // console.log(
+    //   `${request.info.remoteAddress}: ${request.method.toUpperCase()} ${
+    //     request.path
+    //   }`
+    // );
   });
 
   // setup our main router
@@ -161,9 +244,6 @@ const init = async () => {
   // log where the http server is running
   // eslint-disable-next-line no-console
   console.log(Chalk.blue(`HTTP server running on ${server.info.uri}`));
-
-  // creates the db connection
-  await createConnection();
 };
 
 process.on("unhandledRejection", (err) => {
