@@ -31,5 +31,9 @@ module.exports = {
     "@typescript-eslint/no-empty-function": "off",
     "comma-dangle": "off",
     "no-plusplus": "off",
+    "no-undef": "off",
+    "no-console": "off",
+    "no-param-reassign": "off",
+    "array-callback-return": "off",
   },
 };

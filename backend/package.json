@@ -24,7 +24,7 @@
     "reflect-metadata": "^0.1.13",
     "socket.io": "^3.1.0",
     "sqlite3": "^5.0.0",
-    "typeorm": "^0.2.29",
+    "typeorm": "^0.2.32",
     "uuid": "^8.3.1",
     "webpack": "^5.16.0",
     "ws": "^7.4.1"

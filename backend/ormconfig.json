@@ -4,13 +4,13 @@
    "database": "database.sqlite",
    "synchronize": false,
    "entities": [
-      "src/models/**/*.ts"
+      "src/models/**/*{.ts,.js}"
    ],
    "migrations": [
-      "src/migration/**/*.ts"
+      "src/migration/**/*{.ts,.js}"
    ],
    "subscribers": [
-      "src/subscriber/**/*.ts"
+      "src/subscriber/**/*{.ts,.js}"
    ],
    "cli": {
       "entitiesDir": "src/entity",
