@@ -1,7 +1,7 @@
 <template>
   <div
     class="cell-container"
-    @click="cellClicked"
+    @click.stop="cellClicked"
   >
     <div
       class="cell column items-center q-py-sm q-px-xs"
@@ -131,18 +131,24 @@ export default defineComponent({
     clearInterval(this.interval);
   },
   mounted() {
+    let ledsOn = true;
+
     this.interval = setInterval(() => {
       if (this.status === "charging" || this.status === "discharging")
-        this.activeClass = this.activeClass ? "" : "yellow";
+        this.activeClass = this.activeClass && !ledsOn ? "" : "yellow";
       else if (this.status === "complete")
         this.activeClass = "green";
+      else if (this.status === "verror" || this.status === "error")
+        this.activeClass = "red";
       else if (this.status === "empty" || this.status === "idle")
         this.activeClass = "blue";
       else this.activeClass = "";
-    }, 1000);
+
+      ledsOn = !ledsOn;
+    }, 500);
 
     this.scanHandler = EventBus.$on(`scan-result-${this.deviceId}-${this.channel}`, (result: {cellId: string, cellType: string}) => {
-        console.log("Scan result! ", result);
+        // console.log("Scan result! ", result);
     });
   },
   methods: {
@@ -189,6 +195,10 @@ export default defineComponent({
 
 .yellow {
   background: $warning;
+}
+
+.red {
+  background: $negative;
 }
 
 .blue {

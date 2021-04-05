@@ -11,3 +11,12 @@
 .q-page {
   padding-bottom: env(safe-area-inset-bottom);
 }
+
+.no-select {
+  user-select: none;
+  cursor: default;
+}
+
+.clickable {
+  cursor: pointer!important;
+}

@@ -5,5 +5,7 @@ export default {
   scanQr: "mdi-qrcode-scan",
   back: "mdi-arrow-left",
   menu: "mdi-menu",
-  close: "mdi-close"
+  close: "mdi-close",
+  connected: "mdi-wifi",
+  disconnected: "mdi-wifi-off"
 };

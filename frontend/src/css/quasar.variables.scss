@@ -22,3 +22,11 @@ $positive: #90be6d;
 $negative: #f94144;
 $info: #4194d8;
 $warning: #f8961e;
+
+.error {
+  color: $negative;
+}
+
+.success {
+  color: $positive;
+}
