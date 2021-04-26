@@ -13,7 +13,7 @@
         </p>
 
         <p>
-          Please be aware that jCharge Control automatically looks for compatible servers on your network. Your network must support mDNS services for this to work.
+          Please be aware that kCharge Control automatically looks for compatible servers on your network. Your network must support mDNS services for this to work.
         </p>
       </div>
     </div>

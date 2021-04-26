@@ -160,8 +160,8 @@ module.exports = configure((ctx) => ({
     workboxPluginMode: "GenerateSW", // 'GenerateSW' or 'InjectManifest'
     workboxOptions: {}, // only for GenerateSW
     manifest: {
-      name: "jCharge",
-      short_name: "jCharge",
+      name: "kCharge",
+      short_name: "kCharge",
       description: "A battery testing and management platform",
       display: "standalone",
       orientation: "portrait",

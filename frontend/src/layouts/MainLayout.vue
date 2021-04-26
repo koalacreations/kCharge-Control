@@ -137,7 +137,7 @@
           class="q-my-md"
         />
         <p class="q-pt-md">
-          Searching for a jCharge server
+          Searching for a kCharge server
           <span class="one">.</span><span class="two">.</span><span class="three">.</span>
         </p>
       </q-page-container>
@@ -164,7 +164,7 @@ const BS = Plugins.BarcodeScanner;
 const linksData = [
   {
     title: "Dashboard",
-    caption: "Main jCharge dashboard",
+    caption: "Main kCharge dashboard",
     icon: "mdi-view-dashboard",
     to: { name: "dashboard" },
   },
@@ -176,7 +176,7 @@ const linksData = [
   },
   {
     title: "Settings",
-    caption: "Configure jCharge settings",
+    caption: "Configure kCharge settings",
     icon: "mdi-cog",
     to: { name: "settings" },
   },
@@ -186,10 +186,10 @@ const linksData = [
   },
 
   {
-    title: "jCharge on Github",
-    caption: "github.com/jabelone/jCharge",
+    title: "kCharge on Github",
+    caption: "koalacreations/kCharge-Control",
     icon: "mdi-github",
-    link: "https://github.com/jabelone/jCharge",
+    link: "https://github.com/koalacreations/kCharge-Control",
   },
 ];
 
@@ -203,7 +203,7 @@ export default defineComponent({
       cellType: "",
       cellId: 0,
       retrieved: {} as ICell,
-      title: "jCharge",
+      title: "kCharge",
     };
   },
   components: { EssentialLink, CrossHair },

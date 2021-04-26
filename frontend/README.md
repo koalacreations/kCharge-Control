@@ -1,4 +1,4 @@
-# jCharge (frontend)
+# kCharge (frontend)
 
 A battery testing and management platform
 

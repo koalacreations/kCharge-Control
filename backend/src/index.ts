@@ -9,13 +9,13 @@ import { networkInterfaces } from "os";
 import { Server, Socket } from "socket.io";
 import Mdns from "mdns";
 import routes from "./routes";
-import Parser from "./jcharge/parser";
-import Handler from "./jcharge/handler";
+import Parser from "./kcharge/parser";
+import Handler from "./kcharge/handler";
 import { WSResponse } from "../../frontend/src/types";
 import { Device } from "./models/Device";
 import { DeviceChannel } from "./models/DeviceChannel";
 
-// Our jCharge packet parser
+// Our kCharge packet parser
 const packetParser = new Parser(1);
 // tslint:disable-next-line:no-var-requires
 const pjson = require("../package.json");
@@ -44,7 +44,7 @@ function calculateAddresses() {
     }
   }
 
-  // calculate the broadcast IP for the jCharge hello packet
+  // calculate the broadcast IP for the kCharge hello packet
   // const multicastAddress = "192.168.0.207";
   const multicastAddress = addresses[Object.keys(addresses)[0]][0].broadcast;
   const serverHost = addresses[Object.keys(addresses)[0]][0].address;
@@ -85,7 +85,7 @@ const init = async () => {
         websocketHost: `${addresses.server}:${WS_PORT}`,
         apiHost: `${addresses.server}:${HTTP_PORT}`,
         time: Math.floor(Date.now() / 1000),
-        serverName: "jCharge Server"
+        serverName: "kCharge Server"
       }
     });
 
@@ -233,7 +233,7 @@ const init = async () => {
     method: "GET",
     path: "/",
     handler: () => ({
-      message: "You've reached the jCharge API.",
+      message: "You've reached the kCharge API.",
       version: pjson.version,
     }),
   });

@@ -1,5 +1,5 @@
-# jCharge Control
-jCharge Control is an open source battery cell tester control and management application. With an [open specification](/backend/API%20Specification.md), anybody can make a custom battery cell charger, discharger or multi purpose tester and control it using a modern web interface.
+# kCharge Control
+kCharge Control is an open source battery cell tester control and management application. With an [open specification](/backend/API%20Specification.md), anybody can make a custom battery cell charger, discharger or multi purpose tester and control it using a modern web interface.
 
 ## Getting Started
 This application is currently being developed and it is not recommended to use it.

@@ -61,30 +61,29 @@ export default defineComponent({
       // Hide the splash
       await SplashScreen.hide();
 
-
-      Zeroconf.watch("_jcharge-http._tcp.", "local.").subscribe(result => {
+      Zeroconf.watch("_kCharge-http._tcp.", "local.").subscribe(result => {
         if (result.action === "resolved") {
           const httpUrl = `http://${result.service.ipv4Addresses[0]}:${result.service.port}`;
 
           // set the axios base url
-          console.log(`jCharge HTTP API found at: ${httpUrl}`);
+          console.log(`kCharge HTTP API found at: ${httpUrl}`);
           this.setHttpBaseUrl(httpUrl);
         }
       });
 
-      Zeroconf.watch("_jcharge-sio._tcp.", "local.").subscribe(result => {
+      Zeroconf.watch("_kCharge-sio._tcp.", "local.").subscribe(result => {
         if (result.action === "resolved") {
           const sioUrl = `http://${result.service.ipv4Addresses[0]}:${result.service.port}`;
 
           // we found the SIO API
-          console.log(`jCharge SIO (SocketIO) API found at: ${sioUrl}`);
+          console.log(`kCharge SIO (SocketIO) API found at: ${sioUrl}`);
           this.connectSio(sioUrl);
         }
       });
 
-      Zeroconf.watch("_jcharge-wss._tcp.", "local.").subscribe(result => {
+      Zeroconf.watch("_kCharge-wss._tcp.", "local.").subscribe(result => {
         if (result.action === "resolved") {
-          console.log(`jCharge WSS (WS Server) found at: http://${result.service.ipv4Addresses[0]}:${result.service.port}`);
+          console.log(`kCharge WSS (WS Server) found at: http://${result.service.ipv4Addresses[0]}:${result.service.port}`);
         }
       });
     }

@@ -12,7 +12,7 @@
       />
 
       <p>
-        This device is connected to a jCharge server, but no testing device(s) were found on the local network. Make sure your device is powered on and connected to WiFi.
+        This device is connected to a kCharge server, but no testing device(s) were found on the local network. Make sure your device is powered on and connected to WiFi.
       </p>
     </div>
 
