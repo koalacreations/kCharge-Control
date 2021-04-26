@@ -50,9 +50,10 @@
               :icon="icons.battery"
               label="Start Discharge"
               :disable="status !== 'idle'"
+              @click="startDischarge"
             >
               <q-tooltip
-                v-if="!barcodeEnable"
+                v-if="status !== 'idle'"
                 :delay="500"
               >
                 Unable to start a discharge unless this channel is idle.
@@ -87,6 +88,7 @@
 
 <script lang="ts" >
 import { defineComponent } from "@vue/composition-api";
+import {mapGetters} from "vuex";
 import { EventBus } from "../event-bus";
 import icons from "../icons";
 import barcode from "../mixins/barcode";
@@ -123,6 +125,7 @@ export default defineComponent({
     };
   },
   computed: {
+    ...mapGetters("config", ["setSioConnected"]),
     icons() {
       return icons;
     }
@@ -140,8 +143,10 @@ export default defineComponent({
         this.activeClass = "green";
       else if (this.status === "verror" || this.status === "error")
         this.activeClass = "red";
-      else if (this.status === "empty" || this.status === "idle")
+      else if (this.status === "empty")
         this.activeClass = "blue";
+      else if (this.status === "idle")
+        this.activeClass = "yellow";
       else this.activeClass = "";
 
       ledsOn = !ledsOn;
@@ -154,6 +159,9 @@ export default defineComponent({
   methods: {
     cellClicked() {
       this.dialog = true;
+    },
+    startDischarge() {
+      EventBus.$emit("start-action-discharge", {slotId: `${this.deviceId}-${this.channel || ""}`});
     },
     startScan() {
       EventBus.$emit("scan-start", {slotId: `${this.deviceId}-${this.channel || ""}`});
@@ -202,6 +210,6 @@ export default defineComponent({
 }
 
 .blue {
-  background: $primary;
+  background: $secondary;
 }
 </style>
