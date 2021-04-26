@@ -1,26 +1,26 @@
-# jCharge Control API Specification
+# kCharge Control API Specification
 ## Purpose of document
-The purpose of this document is to outline a standardised API for integrating different cell testing devices into the jCharge Control software. This specification will focus on integrating a cell testing device with the jCharge Control backend server and will not include any part of the front end or front end API.
+The purpose of this document is to outline a standardised API for integrating different cell testing devices into the kCharge Control software. This specification will focus on integrating a cell testing device with the kCharge Control backend server and will not include any part of the front end or front end API.
 
 ## Meta
 Protocol Version: **1 [DRAFT]**
 
 ## Overview
-The jCharge Control protocol is web socket based. Websockets were specifically chosen over socket.io due to the easier implementation on embedded microcontroller platforms. The protocol is a defined set of JSON messages to send data to the jCharge Control backend server, and to send control messages to testing devices.
+The kCharge Control protocol is web socket based. Websockets were specifically chosen over socket.io due to the easier implementation on embedded microcontroller platforms. The protocol is a defined set of JSON messages to send data to the kCharge Control backend server, and to send control messages to testing devices.
 
 ## General protocol requirements
 
-* Each websocket message  **must** contain **exactly one** jCharge Control packet.
-* The jCharge Control server **should** ignore any packets that don't meet the specification.
-* The jCharge Control server **may** attempt to log or display an error message if it receives a packet that doesn't meet the specification.
-* The jCharge Control server **should** treat malformed JSON as a packet that doesn't meet the specification but **may** process the packet if the JSON can be parsed and the resulting object meets the specification.
+* Each websocket message  **must** contain **exactly one** kCharge Control packet.
+* The kCharge Control server **should** ignore any packets that don't meet the specification.
+* The kCharge Control server **may** attempt to log or display an error message if it receives a packet that doesn't meet the specification.
+* The kCharge Control server **should** treat malformed JSON as a packet that doesn't meet the specification but **may** process the packet if the JSON can be parsed and the resulting object meets the specification.
 * Any breaking changes or updates to the specification **must** result in an increase to the protocol version.
-* A jCharge Protocol parser **should** check the version number and refuse to parse a packet if it does not match the expected value(s).
+* A kCharge Protocol parser **should** check the version number and refuse to parse a packet if it does not match the expected value(s).
 * The protocol is designed to be mostly stateless and there is no requirement for acknowledgements etc.
-* A device can be fully automated and the jCharge backend server / UI is simply monitoring a device, the device can be fully controlled by the jCharge backend server / UI, or a mixture of both.
+* A device can be fully automated and the kCharge backend server / UI is simply monitoring a device, the device can be fully controlled by the kCharge backend server / UI, or a mixture of both.
 
 ## Packet format
-A jCharge Control packet is defined as a single JSON object that follows the format below. Each packet's example object **must** be put in the `payload` key to form a valid jCharge Control packet. The `deviceId` must be unique and **must** be included in all packets to and from a device.
+A kCharge Control packet is defined as a single JSON object that follows the format below. Each packet's example object **must** be put in the `payload` key to form a valid kCharge Control packet. The `deviceId` must be unique and **must** be included in all packets to and from a device.
 
 ```
 {
@@ -32,20 +32,20 @@ A jCharge Control packet is defined as a single JSON object that follows the for
 ```
 
 ## Auto Discovery
-The jCharge Control protocol defines an auto discovery mechanism to help testing devices discover a jCharge Control server on the local network. A testing device **should** implement auto discovery, but if it chooses not to, this section **may** be ignored. This is separate from the auto discovery method implemented by the jCharge app that uses mDNS (ie Bonjour/Zeroconf) for discovery and socket.io for communication.
+The kCharge Control protocol defines an auto discovery mechanism to help testing devices discover a kCharge Control server on the local network. A testing device **should** implement auto discovery, but if it chooses not to, this section **may** be ignored. This is separate from the auto discovery method implemented by the kCharge app that uses mDNS (ie Bonjour/Zeroconf) for discovery and socket.io for communication.
 
 The auto discovery mechanism works as follows:
 
-* There **must** be no more than **one** jCharge Control backend server on a network. The behaviour of multiple backend servers on a network is *undefined*.
-* Every 3-10 seconds the jCharge Control server **must** send out a `hello` packet to the broadcast address on port `54321`.
+* There **must** be no more than **one** kCharge Control backend server on a network. The behaviour of multiple backend servers on a network is *undefined*.
+* Every 3-10 seconds the kCharge Control server **must** send out a `hello` packet to the broadcast address on port `54321`.
 * Once a testing device receives a `hello` packet, it **should** attempt to open a websocket connection to the IP address and port included in the `hello` packet.
 * A testing device **must** send a `helloServer` packet before any other packets after opening a websocket connection.
-* A jCharge backend server **may** choose to close the websocket connection, or, wait for a valid `helloServer` packet before attempting to parse any more packets from that device.
+* A kCharge backend server **may** choose to close the websocket connection, or, wait for a valid `helloServer` packet before attempting to parse any more packets from that device.
 
 ## Command Definitions
-Each command definition below is a valid jCharge Control command. Any commands *not* listed below **must** be ignored. The title of each command definition should be used in the `command` key and the object listed under each title should be used in the `payload` key of the jCharge Control Packet. Each command **should** only be sent to the devices listed under each command (ie only to server or only to a device).
+Each command definition below is a valid kCharge Control command. Any commands *not* listed below **must** be ignored. The title of each command definition should be used in the `command` key and the object listed under each title should be used in the `payload` key of the kCharge Control Packet. Each command **should** only be sent to the devices listed under each command (ie only to server or only to a device).
 
-A `device` is a battery cell charger/discharger etc. that is connecting to a jCharge Control backend.
+A `device` is a battery cell charger/discharger etc. that is connecting to a kCharge Control backend.
 
 --
 
@@ -104,36 +104,6 @@ A `device` is a battery cell charger/discharger etc. that is connecting to a jCh
 * `configurableChargeCurrent` and `configurableDischargeCurrent` specify if the device supports charging or discharging at a configurable current.
 * `configurableChargeVoltage` and `configurableDischargeVoltage` specify if the device supports charging or discharging with a configurable voltage cutoff.
 * The `deviceId` is not needed in other packets because the server keeps track of each socket connection separately.
-
---
-
-### Command `ping`
-
-**Sent to:** device or server
-
-#### Payload
-
-```javascript
-{}
-```
-
-#### Notes
-* This is a special packet that may be used by end devices to check that the websocket connection is still active and the server is responding to messages. A device or server **must** reply with a `pong` packet as soon as possible after receiving a `ping` packet.
-
---
-
-### Command `pong`
-
-**Sent to:** device or server
-
-#### Payload
-
-```javascript
-{}
-```
-
-#### Notes
-* This is a special packet that may be used by end devices to check that the websocket connection is still active and the server is responding to messages. A jCharge server **must** reply with a `pong` packet as soon as possible after receiving a `ping` packet.
 
 --
 
@@ -390,7 +360,7 @@ Note that for all "error" conditions - the device will not proceed until it is r
 ```
 
 #### Notes
-* A jCharge backend server may log any reported message but it **should** display it on the UI immediately upon receiving it.
+* A kCharge backend server may log any reported message but it **should** display it on the UI immediately upon receiving it.
 * The UI **should** show red for an error, yellow for a warning and the primary colour for an info message.
 * The message length **should** be less than 50 characters. However, messages up to 250 characters **may** be sent. This restriction is mainly for display purposes.
 
