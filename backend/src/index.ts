@@ -25,6 +25,7 @@ const WS_PORT = 12345;
 const DISCOVERY_PORT = 54321;
 const HTTP_PORT = 3000;
 const SocketIOConnections = [] as Socket[];
+let wss: WebSocket.Server;
 
 function calculateAddresses() {
   const interfaces = networkInterfaces();
@@ -52,24 +53,18 @@ function calculateAddresses() {
   return { broadcast: multicastAddress, server: serverHost };
 }
 
-// Setup our jCharge websocket server
+// Setup our kCharge websocket server
 const init = async () => {
-  let wss = null;
-  try {
-    wss = new WebSocket.Server({ port: WS_PORT });
-  } catch (e) {
-    console.log("ERRRRRROR");
-    console.log(e);
-  }
+  wss = new WebSocket.Server({ port: WS_PORT });
   const broadcaster = dgram.createSocket({ type: "udp4" });
   await broadcaster.bind(DISCOVERY_PORT, "0.0.0.0");
   await broadcaster.setBroadcast(true);
   const addresses = calculateAddresses();
 
   // Start advertising our ws and http services
-  const mdnsHTTP = Mdns.createAdvertisement(Mdns.tcp("jcharge-http"), HTTP_PORT);
-  const mdnsSIO = Mdns.createAdvertisement(Mdns.tcp("jcharge-sio"), HTTP_PORT);
-  const mdnsWSS = Mdns.createAdvertisement(Mdns.tcp("jcharge-wss"), WS_PORT);
+  const mdnsHTTP = Mdns.createAdvertisement(Mdns.tcp("kCharge-http"), HTTP_PORT);
+  const mdnsSIO = Mdns.createAdvertisement(Mdns.tcp("kCharge-sio"), HTTP_PORT);
+  const mdnsWSS = Mdns.createAdvertisement(Mdns.tcp("kCharge-wss"), WS_PORT);
   mdnsHTTP.start();
   mdnsSIO.start();
   mdnsWSS.start();
@@ -119,68 +114,75 @@ const init = async () => {
       channel.save();
     });
   });
-
+  try {
   // whenever we get a new connection, setup a message handler and heartbeats
-  wss.on("connection", (ws) => {
-    // @ts-ignore
-    ws.isAlive = true;
+    wss.on("connection", (ws) => {
+      // this stops unhandled websocket exceptions from crashing the entire server
+      ws.on("error", console.error);
 
-    // Setup a regular heartbeat interval
-    // @ts-ignore
-    ws.heartbeartInterval = setInterval(async () => {
-      // @ts-ignore
-      if (ws.isAlive === false) {
-        // if we didn't get a pong since the last time we ran, assume we got disconnected
-        console.log("DISCONNECTED :(");
-        // @ts-ignore
-        clearInterval(ws.heartbeartInterval);
-
-        // find our device and update it's state
-        // @ts-ignore
-        const device = await Device.findOne(ws.deviceId);
-
-        if (device) {
-          device.connected = false;
-          device.save();
-
-          const channels = await DeviceChannel.find({ where: { device: device.id } });
-
-          // reset all the channels back to default values
-          channels.map((channel) => {
-            channel.state = DeviceChannel.DeviceChannelState.empty;
-            channel.current = 0;
-            channel.voltage = 0;
-            channel.temperature = 0;
-            channel.capacity = 0;
-            channel.save();
-          });
-        }
-
-        // terminate (what's left of) the websocket connection
-        return ws.terminate();
-      }
-
-      // @ts-ignore
-      ws.isAlive = false;
-      ws.ping();
-
-      return true;
-    }, 7000);
-
-    console.log("============ DEVICE CONNECTED ============");
-    const packetHandler = new Handler(ws);
-
-    ws.on("message", (message) => {
-      const parsed = packetParser.parse(JSON.parse(message.toString()));
-      packetHandler.handle(parsed, ws);
-    });
-
-    ws.on("pong", () => {
       // @ts-ignore
       ws.isAlive = true;
-    });
-  });
 
+      // Setup a regular heartbeat interval
+      // @ts-ignore
+      ws.heartbeartInterval = setInterval(async () => {
+      // @ts-ignore
+        if (ws.isAlive === false) {
+        // if we didn't get a pong since the last time we ran, assume we got disconnected
+          console.log("DISCONNECTED :(");
+          // @ts-ignore
+          clearInterval(ws.heartbeartInterval);
+
+          // find our device and update it's state
+          // @ts-ignore
+          const device = await Device.findOne(ws.deviceId);
+
+          if (device) {
+            device.connected = false;
+            device.save();
+
+            const channels = await DeviceChannel.find({ where: { device: device.id } });
+
+            // reset all the channels back to default values
+            channels.map((channel) => {
+              channel.state = DeviceChannel.DeviceChannelState.empty;
+              channel.current = 0;
+              channel.voltage = 0;
+              channel.temperature = 0;
+              channel.capacity = 0;
+              channel.save();
+            });
+          }
+
+          // terminate (what's left of) the websocket connection
+          return ws.terminate();
+        }
+
+        // @ts-ignore
+        ws.isAlive = false;
+        ws.ping();
+
+        return true;
+      }, 7000);
+
+      console.log("============ DEVICE CONNECTED ============");
+      const packetHandler = new Handler(ws);
+
+      ws.on("message", (message: { toString: () => string; }) => {
+        const parsed = packetParser.parse(JSON.parse(message.toString()));
+        console.log(`Got WS Message: ${parsed.command}`);
+        packetHandler.handle(parsed, ws);
+      });
+
+      ws.on("pong", () => {
+      // @ts-ignore
+        ws.isAlive = true;
+      });
+    });
+  } catch (e) {
+    console.log("ERRRRRROR");
+    console.log(e);
+  }
   // create the hapi HTTP server
   const server = new Hapi.Server({
     port: HTTP_PORT,
