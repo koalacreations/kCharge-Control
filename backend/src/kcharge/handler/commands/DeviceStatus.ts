@@ -8,8 +8,12 @@ export default async function DeviceStatus(payload: IPayloadDeviceStatus, device
   if (device) {
     payload.channels.forEach(async (channel) => {
       const channelEntity = await DeviceChannel.findOne({
-        where: { id: channel.id, device: device.id }
+        where: { channelId: channel.id, device: device.id }
       });
+      if (!channelEntity) {
+        console.log(`Warning!! No channelEntity found for ${channel.id} on device: ${device.id}.`);
+        return;
+      } // this means we likely haven't finished adding the device yet
       channelEntity.voltage = channel.voltage;
       channelEntity.current = channel.current;
       channelEntity.temperature = channel.temperature;

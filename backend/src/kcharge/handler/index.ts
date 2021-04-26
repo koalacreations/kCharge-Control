@@ -25,7 +25,7 @@ export class Handler {
   handle(packet: IPacket, ws: WebSocket): boolean {
     const command = (Parser.PacketType as any)[packet.command];
     const builder = new Builder(packet.deviceId);
-    // console.log(Chalk(`Got jCharge packet: ${command}`));
+    // console.log(Chalk(`Got kCharge packet: ${command}`));
 
     switch (command) {
       case Parser.PacketType.HelloServer:
