@@ -31,7 +31,7 @@
       <channel
         v-for="channel in channels"
         :key="channel.id"
-        :channel="channel.id"
+        :channel="channel.channelId"
         :device-id="device.id"
         :voltage="channel.voltage"
         :current="channel.current"
@@ -73,7 +73,7 @@ export default defineComponent({
       // then we sort it so they are always ordered correctly
       if (this.device) {
         // @ts-ignore
-        return [...this.device.deviceChannels].sort((a, b) => a.id > b.id) ;
+        return [...this.device.deviceChannels].sort((a, b) => a.channelId > b.channelId) ;
       }
       return [];
     }
