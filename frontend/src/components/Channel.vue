@@ -10,6 +10,8 @@
         <div>{{ status }}</div>
         <div>{{ voltage.toFixed(2) }} V</div>
         <div>{{ capacity.toFixed(2) }} mAh</div>
+        <div>{{ Math.floor(current) }} mA</div>
+        <div>{{ parseInt(temperature) }} °C</div>
       </div>
 
       <div class="title">
@@ -25,7 +27,7 @@
     <q-dialog
       v-model="dialog"
     >
-      <q-card style="min-width: 300px;">
+      <q-card style="min-width: 370px;">
         <q-card-section>
           <div class="q-pb-md row">
             <div class="text-h6">
@@ -47,9 +49,10 @@
             <q-btn
               class="col q-mr-xs q-mb-sm"
               color="primary"
-              :icon="icons.battery"
-              label="Start Discharge"
-              :disable="status !== 'idle'"
+              :icon="icons.discharge"
+              label="Discharge Cell"
+              v-if="status === 'idle' || status === 'complete'"
+              :disabled="!connected"
               @click="startDischarge"
             >
               <q-tooltip
@@ -59,6 +62,18 @@
                 Unable to start a discharge unless this channel is idle.
               </q-tooltip>
             </q-btn>
+
+
+            <q-btn
+              class="col q-mr-xs q-mb-sm"
+              color="primary"
+              :icon="icons.stop"
+              label="Stop Cell"
+              v-else-if="status === 'charging' || status === 'discharging'"
+              :disabled="!connected"
+              @click="stopAction"
+            />
+
             <q-btn
               class="col q-mr-xs q-mb-sm"
               color="primary"
@@ -78,6 +93,7 @@
               <b>Status:</b> {{ status }}<br>
               <b>Voltage:</b> {{ voltage.toFixed(2) }} V<br>
               <b>Capacity:</b> {{ capacity.toFixed(2) }} mAh<br>
+              <b>Current:</b> {{ current }} mA<br>
             </p>
           </div>
         </q-card-section>
@@ -101,6 +117,9 @@ export default defineComponent({
       required: true,
       type: String
     },
+    connected: {
+      default: false,
+    },
     status: {
       type: String,
       default: "empty"
@@ -113,6 +132,12 @@ export default defineComponent({
       default: "-",
     },
     capacity: {
+      default: "0",
+    },
+    current: {
+      default: "0",
+    },
+    temperature: {
       default: "0",
     },
   },
@@ -161,7 +186,10 @@ export default defineComponent({
       this.dialog = true;
     },
     startDischarge() {
-      EventBus.$emit("start-action-discharge", {slotId: `${this.deviceId}-${this.channel || ""}`});
+      EventBus.$emit("wsCommand", {command: "startAction", data: {deviceId: this.deviceId, channel: this.channel, action: "discharge"}});
+    },
+    stopAction() {
+      EventBus.$emit("wsCommand", {command: "stopAction", data: {deviceId: this.deviceId, channel: this.channel}});
     },
     startScan() {
       EventBus.$emit("scan-start", {slotId: `${this.deviceId}-${this.channel || ""}`});

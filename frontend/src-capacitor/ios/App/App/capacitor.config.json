@@ -1,7 +1,10 @@
 {
   "appId": "dev.jaimyn.jcharge",
-  "appName": "jCharge Control",
+  "appName": "kCharge Control",
   "bundledWebRuntime": false,
   "npmClient": "npm",
-  "webDir": "www"
+  "webDir": "www",
+  "server": {
+    "url": "http://192.168.1.24:8081"
+  }
 }

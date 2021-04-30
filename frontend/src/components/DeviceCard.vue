@@ -31,12 +31,14 @@
       <channel
         v-for="channel in channels"
         :key="channel.id"
+        :connected="device.connected"
         :channel="channel.channelId"
         :device-id="device.id"
         :voltage="channel.voltage"
         :current="channel.current"
         :status="channel.state"
         :capacity="channel.capacity"
+        :temperature="channel.temperature"
       />
     </div>
   </div>

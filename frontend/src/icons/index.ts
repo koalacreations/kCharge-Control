@@ -6,6 +6,9 @@ export default {
   back: "mdi-arrow-left",
   menu: "mdi-menu",
   close: "mdi-close",
+  stop: "mdi-stop",
   connected: "mdi-wifi",
-  disconnected: "mdi-wifi-off"
+  disconnected: "mdi-wifi-off",
+  discharge: "mdi-battery-charging-low",
+  charge: "mdi-battery-charging-high"
 };
