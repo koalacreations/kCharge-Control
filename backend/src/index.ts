@@ -11,7 +11,8 @@ import Mdns from "mdns";
 import routes from "./routes";
 import Parser from "./kcharge/parser";
 import Handler from "./kcharge/handler";
-import { WSResponse } from "../../frontend/src/types";
+import SioHandler from "./kcharge/sioHandler";
+import { WSCommand, WSResponse } from "../../frontend/src/types";
 import { Device } from "./models/Device";
 import { DeviceChannel } from "./models/DeviceChannel";
 
@@ -24,8 +25,8 @@ const pjson = require("../package.json");
 const WS_PORT = 12345;
 const DISCOVERY_PORT = 54321;
 const HTTP_PORT = 3000;
-const SocketIOConnections = [] as Socket[];
-let wss: WebSocket.Server;
+// eslint-disable-next-line import/no-mutable-exports,import/prefer-default-export
+export let wss: WebSocket.Server;
 
 function calculateAddresses() {
   const interfaces = networkInterfaces();
@@ -53,9 +54,15 @@ function calculateAddresses() {
   return { broadcast: multicastAddress, server: serverHost };
 }
 
+export async function getWS(deviceId: string) {
+  // @ts-ignore
+  return Array.from(wss.clients).find((client) => client?.deviceId === deviceId);
+}
+
 // Setup our kCharge websocket server
 const init = async () => {
-  wss = new WebSocket.Server({ port: WS_PORT });
+  wss = new WebSocket.Server({ port: WS_PORT, perMessageDeflate: false });
+
   const broadcaster = dgram.createSocket({ type: "udp4" });
   await broadcaster.bind(DISCOVERY_PORT, "0.0.0.0");
   await broadcaster.setBroadcast(true);
@@ -117,9 +124,6 @@ const init = async () => {
   try {
   // whenever we get a new connection, setup a message handler and heartbeats
     wss.on("connection", (ws) => {
-      // this stops unhandled websocket exceptions from crashing the entire server
-      ws.on("error", console.error);
-
       // @ts-ignore
       ws.isAlive = true;
 
@@ -140,27 +144,14 @@ const init = async () => {
           if (device) {
             device.connected = false;
             device.save();
-
-            const channels = await DeviceChannel.find({ where: { device: device.id } });
-
-            // reset all the channels back to default values
-            channels.map((channel) => {
-              channel.state = DeviceChannel.DeviceChannelState.empty;
-              channel.current = 0;
-              channel.voltage = 0;
-              channel.temperature = 0;
-              channel.capacity = 0;
-              channel.save();
-            });
           }
 
           // terminate (what's left of) the websocket connection
-          return ws.terminate();
+          return ws.close();
         }
 
         // @ts-ignore
         ws.isAlive = false;
-        ws.ping();
 
         return true;
       }, 7000);
@@ -168,14 +159,27 @@ const init = async () => {
       console.log("============ DEVICE CONNECTED ============");
       const packetHandler = new Handler(ws);
 
-      ws.on("message", (message: { toString: () => string; }) => {
-        const parsed = packetParser.parse(JSON.parse(message.toString()));
-        console.log(`Got WS Message: ${parsed.command}`);
-        packetHandler.handle(parsed, ws);
+      ws.on("message", (message) => {
+        let parsed;
+        try {
+          parsed = packetParser.parse(JSON.parse(message.toString()));
+        } catch (e) {
+          console.warn("Unable to parse JSON from received WS message.");
+        }
+        if (parsed) {
+          console.log(`Got WS Message: ${parsed.command}`);
+          packetHandler.handle(parsed);
+        }
+      });
+
+      ws.on("ping", () => {
+        // @ts-ignore
+        ws.isAlive = true;
+        ws.pong("");
       });
 
       ws.on("pong", () => {
-      // @ts-ignore
+        // @ts-ignore
         ws.isAlive = true;
       });
     });
@@ -203,29 +207,26 @@ const init = async () => {
 
   // setup our socket io server new connection handler
   sio.on("connection", (socket: Socket) => {
-    const refreshInterval = setInterval(() => {
-
-    }, 1000);
-
     socket.emit("join", {
       message: "Connected to server.",
       version: pjson.version,
     }, (e: WSResponse) => { console.log(e.message); });
 
-    socket.on("disconnect", () => {
-      clearInterval(refreshInterval);
+    socket.on("wsCommand", (message: WSCommand) => {
+      console.log(`Got WS command: ${message.command}`);
+      new SioHandler().handle(message);
     });
   });
 
   // add a listener to the "response" event to console log the request method and path for dev
-  server.events.on("response", (request) => {
-    // eslint-disable-next-line no-console
-    // console.log(
-    //   `${request.info.remoteAddress}: ${request.method.toUpperCase()} ${
-    //     request.path
-    //   }`
-    // );
-  });
+  // server.events.on("response", (request) => {
+  // eslint-disable-next-line no-console
+  // console.log(
+  //   `${request.info.remoteAddress}: ${request.method.toUpperCase()} ${
+  //     request.path
+  //   }`
+  // );
+  // });
 
   // setup our main router
   server.route(routes);

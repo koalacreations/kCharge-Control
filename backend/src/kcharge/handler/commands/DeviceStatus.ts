@@ -6,6 +6,11 @@ export default async function DeviceStatus(payload: IPayloadDeviceStatus, device
   const device = await Device.findOne(deviceId);
 
   if (device) {
+    if (device.connected === false) {
+      device.connected = true;
+      device.save();
+    }
+
     payload.channels.forEach(async (channel) => {
       const channelEntity = await DeviceChannel.findOne({
         where: { channelId: channel.id, device: device.id }
