@@ -1,4 +1,4 @@
-import { IPacket } from "./types";
+import { IPacket, IPayloadStartAction, IPayloadStopAction } from "./types";
 import Parser from "./parser";
 
 export class Builder {
@@ -24,6 +24,14 @@ export class Builder {
 
     buildPong() {
       return this.buildPacket(Parser.PacketType.Pong, {});
+    }
+
+    buildStartAction(payload: IPayloadStartAction) {
+      return this.buildPacket(Parser.PacketType.StartAction, payload);
+    }
+
+    buildStopAction(payload: IPayloadStopAction) {
+      return this.buildPacket(Parser.PacketType.StopAction, payload);
     }
 }
 

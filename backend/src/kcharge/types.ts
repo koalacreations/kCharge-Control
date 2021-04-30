@@ -91,6 +91,17 @@ export interface IPayloadStartAction {
   cutoffVoltage: number | null;
 }
 
+export interface ISioPayloadStartAction {
+  deviceId: string;
+  channel: number;
+  action: "charge" | "discharge" | "dcResistance" | "acResistance";
+}
+
+export interface ISioPayloadStopAction {
+  deviceId: string;
+  channel: number;
+}
+
 interface ChannelPayload {
   channel: number;
 }

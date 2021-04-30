@@ -13,13 +13,15 @@ import { defineComponent } from "@vue/composition-api";
 import { Plugins } from "@capacitor/core";
 import { Zeroconf } from "@ionic-native/zeroconf";
 import { mapMutations, mapGetters } from "vuex";
-import { WSJoin } from "./types";
+import { EventBus } from "./event-bus";
 
-if (process.env.PROD) {
-  import("@vue/devtools").then(devtools => {
-    devtools.connect(process.env.BASEURL);
-  });
-}
+import { WSJoin, WSCommand } from "./types";
+
+// if (!process.env.PROD) {
+//   import("@vue/devtools").then(devtools => {
+//     devtools.connect(process.env.BASEURL);
+//   });
+// }
 
 export default defineComponent({
   name: "App",
@@ -49,8 +51,13 @@ export default defineComponent({
         this.setApiVersion(payload.version);
       });
 
-      s.on("devices", (payload: string) => {
-        console.log(payload);
+      s.on("wsCommand", (message: WSCommand) => {
+        console.log(`Received SIO message: ${message.command}.`);
+        EventBus.$emit(message.command, message.data);
+      });
+
+      EventBus.$on("wsCommand", (message: WSCommand) => {
+        s.emit("wsCommand", message);
       });
     }
   },

@@ -22,14 +22,14 @@ export class Handler {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  handle(packet: IPacket, ws: WebSocket): boolean {
+  handle(packet: IPacket): boolean {
     const command = (Parser.PacketType as any)[packet.command];
     const builder = new Builder(packet.deviceId);
     // console.log(Chalk(`Got kCharge packet: ${command}`));
 
     switch (command) {
       case Parser.PacketType.HelloServer:
-        HelloServer(packet.payload as IPayloadHelloServer, ws);
+        HelloServer(packet.payload as IPayloadHelloServer, this.ws);
         break;
 
       case Parser.PacketType.Ping:

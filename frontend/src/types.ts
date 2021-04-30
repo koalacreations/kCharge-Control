@@ -11,6 +11,10 @@ export interface WSResponse {
 export type Callback = (response: WSResponse) => void;
 
 export interface WSJoin {
-          message: string;
-          version: string;
-        }
+  message: string;
+  version: string;
+}
+export interface WSCommand {
+  command: string;
+  data: never;
+}
